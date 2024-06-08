@@ -1,0 +1,20 @@
+FROM node:18
+
+WORKDIR /app
+
+COPY package*.json ./
+
+ARG VITE_API_ENDPOINT
+ENV VITE_API_ENDPOINT $VITE_API_ENDPOINT
+ARG VITE_APP_WS_URL
+ENV VITE_APP_WS_URL $VITE_APP_WS_URL
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 4173
+
+CMD [ "npm", "run", "preview" ]

@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --editor-banner-height: 0px;
+  --toolbar-height: 56px;
+}
