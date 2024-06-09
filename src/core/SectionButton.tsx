@@ -5,15 +5,11 @@ export interface AddButtonProps {
   ariaLabel: string;
   label: string;
   icon: ReactNode;
-  topBorder?: boolean;
 }
 export const SectionButton = (props: AddButtonProps) => {
-  const borderClass = props.topBorder
-    ? "border-t-[color:var(--color-border)] border-t border-solid"
-    : "";
   return (
     <button
-      className={`group grid grid-rows-1 grid-cols-3 p-2 items-center col-span-2 ${borderClass}`}
+      className={`group grid grid-rows-1 grid-cols-3 px-2 items-center col-span-2`}
       aria-label={props.ariaLabel}
       onClick={props.onClick}
     >

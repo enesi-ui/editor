@@ -5,17 +5,13 @@ interface ColorPropertyProps {
   id: string;
   onChange?: (value: string) => void;
   onChangeAlpha?: (value: number) => void;
-  topBorder?: boolean;
   showLabel?: boolean;
 }
 export const ColorProperty = (props: ColorPropertyProps) => {
-  const topBorder = props.topBorder
-    ? "border-t-[color:var(--color-border)] border-t border-solid"
-    : "";
 
   return (
     <div
-      className={`grid grid-rows-1 grid-cols-3 p-2 items-center col-span-2 ${topBorder}`}
+      className={`grid grid-rows-1 grid-cols-3 px-2 items-center col-span-2`}
     >
       {props.showLabel &&
         <label

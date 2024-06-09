@@ -58,7 +58,6 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
         ariaLabel={"Add stroke"}
         label={"Stroke"}
         icon={"+"}
-        topBorder
       />
       {strokeProperty.map((stroke, index) => (
         <ColorProperty

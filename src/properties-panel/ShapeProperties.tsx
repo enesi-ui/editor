@@ -96,11 +96,17 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
       width: roundedWidth,
       height: roundedHeight,
     }));
-    canvasShape.setSizeOrigin(parseFloat(roundedX), parseFloat(roundedY), parseFloat(roundedWidth), parseFloat(roundedHeight), false);
+    canvasShape.setSizeOrigin(
+      parseFloat(roundedX),
+      parseFloat(roundedY),
+      parseFloat(roundedWidth),
+      parseFloat(roundedHeight),
+      false,
+    );
   };
 
   return (
-    <div className="grid grid-cols-2 px-0 py-2">
+    <div className="grid grid-cols-2 px-0 gap-x-2 gap-y-0.5">
       <Property
         topBorder
         hoverEffect
@@ -139,6 +145,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         onChange={(value) => handlePropertyChange("height", value)}
         onFinish={() => handlePropertyFinish()}
       />
+      <div className="divider col-start-1 col-end-3"></div>
       <ColorProperty
         label="fill"
         value={properties.fill}
@@ -147,8 +154,8 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         onChange={handleFillChange}
         onChangeAlpha={handleFillAlphaChange}
         showLabel
-        topBorder
       />
+      <div className="divider col-start-1 col-end-3"></div>
       <StrokeProperty shape={canvasShape} />
     </div>
   );

@@ -6,3 +6,11 @@
   --editor-banner-height: 0px;
   --toolbar-height: 56px;
 }
+
+.input-ghost {
+  @apply hover:border hover:border-base-content/20;
+}
+
+.divider {
+  @apply my-0;
+}

@@ -11,7 +11,7 @@ function Editor() {
   const app = usePixi();
   const pixiRef = useRef<HTMLDivElement>(null);
   const { width } = useWindowDimensions();
-  const [propertiesPanelWidth] = useState(240);
+  const [propertiesPanelWidth] = useState(256);
   const [leftPanelWidth] = useState(144);
   const [canvasWidth, setCanvasWidth] = useState(
     width - propertiesPanelWidth - leftPanelWidth,
