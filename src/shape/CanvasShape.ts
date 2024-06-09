@@ -24,6 +24,10 @@ export interface Shape {
 export interface CanvasShape extends CanvasObject {
   setFill: (color: string, alpha: number) => void;
   setStrokes: (strokes: StrokePropertyData[]) => void;
+
+  getFill(): string;
+  getStroke(): StrokePropertyData[];
+
   createStyle(className: string): string;
 
   serialize(): Omit<Shape, "id">;

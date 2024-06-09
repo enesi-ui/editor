@@ -6,12 +6,13 @@ import { SectionButton } from "~/core/SectionButton.tsx";
 
 interface StrokePropertyProps {
   shape: CanvasShape;
+  className?: string;
 }
 
 export const StrokeProperty = (props: StrokePropertyProps) => {
-  const { shape } = props;
+  const { shape, className } = props;
   const [strokeProperty, setStrokeProperty] = useState<StrokePropertyData[]>(
-    [],
+    shape.getStroke(),
   );
 
   const handleAddStroke = () => {
@@ -58,6 +59,7 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
         ariaLabel={"Add stroke"}
         label={"Stroke"}
         icon={"+"}
+        className={className}
       />
       {strokeProperty.map((stroke, index) => (
         <ColorProperty
@@ -68,6 +70,7 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
           id={`stroke-${index}`}
           onChange={(value) => handleStrokeChange(index, value)}
           onChangeAlpha={(value) => handleStrokeAlphaChange(index, value)}
+          className={className}
         />
       ))}
     </>

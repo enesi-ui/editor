@@ -7,6 +7,7 @@ import { ShapePropertiesData } from "~/properties-panel/ShapePropertiesData.ts";
 import { ColorProperty } from "~/properties-panel/ColorProperty.tsx";
 import { StrokeProperty } from "~/properties-panel/StrokeProperty.tsx";
 import { round } from "~/utility/round.ts";
+import { SectionButton } from "~/core/SectionButton.tsx";
 
 export interface ShapePropertiesProps {
   canvasShape: CanvasShape;
@@ -106,7 +107,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
   };
 
   return (
-    <div className="grid grid-cols-2 px-0 gap-x-2 gap-y-0.5">
+    <div className="grid grid-cols-2 px-0 gap-x-2 gap-y-1">
       <Property
         topBorder
         hoverEffect
@@ -146,6 +147,13 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         onFinish={() => handlePropertyFinish()}
       />
       <div className="divider col-start-1 col-end-3"></div>
+      <SectionButton
+        onClick={() => console.log("Add Fill")}
+        ariaLabel={"Add fill"}
+        label={"Fill"}
+        icon={"+"}
+        className={'col-start-1 col-end-3'}
+      />
       <ColorProperty
         label="fill"
         value={properties.fill}
@@ -153,10 +161,10 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         id="fill"
         onChange={handleFillChange}
         onChangeAlpha={handleFillAlphaChange}
-        showLabel
+        className="col-start-1 col-end-3"
       />
       <div className="divider col-start-1 col-end-3"></div>
-      <StrokeProperty shape={canvasShape} />
+      <StrokeProperty shape={canvasShape} className={'col-start-1 col-end-3'} />
     </div>
   );
 };

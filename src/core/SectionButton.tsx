@@ -5,19 +5,19 @@ export interface AddButtonProps {
   ariaLabel: string;
   label: string;
   icon: ReactNode;
+  className?: string;
 }
 export const SectionButton = (props: AddButtonProps) => {
+  const { className, ariaLabel, label, icon, onClick } = props;
   return (
     <button
-      className={`group grid grid-rows-1 grid-cols-3 px-2 items-center col-span-2`}
-      aria-label={props.ariaLabel}
-      onClick={props.onClick}
+      className={`btn btn-block btn-ghost btn-sm ${className}`}
+      aria-label={ariaLabel}
+      onClick={onClick}
     >
-      <span className="flex justify-start group-hover:text-primary-700 text-sm">
-        {props.label}
-      </span>
-      <span className="col-end-4 col-start-3 flex justify-self-end group-hover:text-primary-700 hover:bg-primary-100 w-8 h-8 justify-center items-center">
-        {props.icon}
+      <span className="flex items-center justify-between w-full">
+        <span>{label}</span>
+        <span>{icon}</span>
       </span>
     </button>
   );

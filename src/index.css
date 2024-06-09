@@ -9,6 +9,13 @@
 
 .input-ghost {
   @apply hover:border hover:border-base-content/20;
+  @apply focus:border focus:border-accent/20;
+  @apply focus-within:border focus-within:border-accent/20;
+}
+
+.input {
+  @apply focus:outline-none;
+  @apply focus-within:outline-2 focus-within:outline-accent focus-within:outline-offset-0;
 }
 
 .divider {

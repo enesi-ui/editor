@@ -127,6 +127,13 @@ export class Rectangle implements CanvasShape {
     new CanvasObjectSelectMove(app, this);
   }
 
+  getFill(): string {
+    return this.fill;
+  }
+  getStroke(): StrokePropertyData[] {
+    return this.strokes;
+  }
+
   resizeHandle1 = (event: FederatedPointerEvent) => {
     const { x: localX } = this.container.toLocal(event.global);
     const { height } = this.getSize();
@@ -302,7 +309,7 @@ export class Rectangle implements CanvasShape {
     };
   }
 
-  setFill(color: string, alpha: number) {
+  async setFill(color: string, alpha: number) {
     const { width, height } = this.graphics;
     this.graphics
       .clear()
@@ -311,9 +318,15 @@ export class Rectangle implements CanvasShape {
       .endFill();
     this.fill = color;
     this.fillAlpha = alpha;
+    if (this.id) {
+      await this.options?.onUpdate?.({
+        ...this.serialize(),
+        id: this.id,
+      });
+    }
   }
 
-  setStrokes(strokes: StrokePropertyData[]) {
+  async setStrokes(strokes: StrokePropertyData[]) {
     this.currentStrokes.map((currentStroke) =>
       this.container.removeChild(currentStroke),
     );
@@ -336,6 +349,13 @@ export class Rectangle implements CanvasShape {
       this.currentStrokes.push(this.container.addChild(stroke));
     });
     this.strokes = strokes;
+
+    if (this.id) {
+      await this.options?.onUpdate?.({
+        ...this.serialize(),
+        id: this.id,
+      });
+    }
   }
 
   get width() {

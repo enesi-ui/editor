@@ -6,44 +6,47 @@ interface ColorPropertyProps {
   onChange?: (value: string) => void;
   onChangeAlpha?: (value: number) => void;
   showLabel?: boolean;
+  className?: string;
 }
 export const ColorProperty = (props: ColorPropertyProps) => {
+  const {
+    label,
+    value,
+    alpha,
+    id,
+    onChange,
+    onChangeAlpha,
+    className,
+    showLabel,
+  } = props;
 
   return (
     <div
-      className={`grid grid-rows-1 grid-cols-3 px-2 items-center col-span-2`}
+      className={`input input-ghost input-sm flex items-center gap-2 group ${className}`}
     >
-      {props.showLabel &&
-        <label
-          htmlFor={props.id}
-          className="flex w-full col-end-[span_3]  pb-2 text-sm"
-        >
-          <span className="flex-[1_1_32%]">{props.label}</span>
-        </label>
-      }
+      {showLabel && <label htmlFor={id}>{label}</label>}
       <input
-        id={props.id}
+        id={id}
         type={"color"}
-        defaultValue={props.value}
-        aria-label={props.showLabel ? props.label : undefined}
+        defaultValue={value}
+        aria-label={showLabel ? label : undefined}
         onChange={(e) => {
           e.preventDefault();
-          return props.onChange?.(e.target.value);
+          return onChange?.(e.target.value);
         }}
-        className="bg-primary-100 w-100 ml-0 pl-0 border-l-0 w-full flex-[1_1_46%]"
       />
+      <span className={"w-full"}>{value}</span>
       <input
         step={0.01}
-        id={`${props.id}-alpha`}
+        id={`${id}-alpha`}
         type="number"
-        defaultValue={props.alpha}
+        defaultValue={alpha}
         onChange={(e) => {
           e.preventDefault();
-          return props.onChangeAlpha?.(parseFloat(e.target.value));
+          return onChangeAlpha?.(parseFloat(e.target.value));
         }}
-        className="bg-primary-100 w-100 ml-0 pl-0 border-l-0 w-full flex-[1_1_46%]"
+        className={"pl-1 w-full group-hover:border-l group-hover:border-base-content/20"}
       />
-      <span className="ml-4 flex-[1_1_42%]">{props.value}</span>
     </div>
   );
 };
