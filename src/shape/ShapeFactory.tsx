@@ -43,7 +43,7 @@ export const ShapeFactory = () => {
 
   const { post } = useShapes();
 
-  const { hide, show, set, triggerElement } = useContextMenu();
+  const { hide, open, set, triggerElement } = useContextMenu();
 
   const create = (factory: Factory, createdEvent: FederatedPointerEvent) => {
     if (tool.current !== Tools.CREATE_SHAPE) return;
@@ -74,6 +74,10 @@ export const ShapeFactory = () => {
     tool.current === Tools.CREATE_SHAPE ? "bg-accent" : "bg-neutral"
   }`;
 
+  const contextButtonClass = `${
+    tool.current === Tools.CREATE_SHAPE ? "text-neutral": "text-neutral-content"
+  }`;
+
   const buttonClass = `${
     tool.current === Tools.CREATE_SHAPE ? "bg-accent btn-accent" : "bg-neutral"
   }`;
@@ -92,7 +96,7 @@ export const ShapeFactory = () => {
         {activeFactory.icon}
       </button>
       <span
-        className={`w-[18px] flex-[0_0_auto] flex pt-0 hover:pt-2 cursor-context-menu join-item  ${activeClass}`}
+        className={`w-4 flex pt-0 hover:pt-2 cursor-context-menu join-item justify-center`}
         onPointerDown={(event) => {
           set({
             x: event.pageX,
@@ -101,12 +105,10 @@ export const ShapeFactory = () => {
           });
         }}
       >
-        <span className="w-12 h-full flex items-center justify-center pointer-events-none">
-          <ChevronIcon />
-        </span>
+        <ChevronIcon className={`h-full flex pointer-events-none ${contextButtonClass}`} />
       </span>
       <ContextMenu
-        show={show}
+        open={open}
         onOutsideClick={hide}
         triggerElement={triggerElement}
       >

@@ -18,7 +18,7 @@ export const PropertiesPanel = (props: PropertiesPanelProps) => {
   return (
     <div
       style={{ width: width ?? "auto" }}
-      className="absolute top-[var(--toolbar-height)] bottom-0 right-0 bg-primary-200 flex flex-col border-l-2 border-l-base-content/20"
+      className="absolute top-[var(--toolbar-height)] bottom-0 right-0 bg-primary-200 flex flex-col border-l-[1px] border-l-base-content/20"
     >
       <div className={'px-2'}>
         <PageProperty />

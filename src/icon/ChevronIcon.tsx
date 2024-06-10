@@ -1,7 +1,9 @@
-export const ChevronIcon = () => {
+import { SVGProps } from "react";
+
+export const ChevronIcon = (props: SVGProps<SVGElement>) => {
   return (
     <svg
-      className="svg"
+      className={`svg ${props.className}`}
       xmlns="http://www.w3.org/2000/svg"
       width="8"
       height="7"

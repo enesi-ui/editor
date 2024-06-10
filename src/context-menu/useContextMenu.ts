@@ -4,14 +4,14 @@ export const useContextMenu = <T = undefined>() => {
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
-    show: boolean;
+    open: boolean;
     triggerElement?: HTMLElement;
     data?: T;
-  }>({ x: 0, y: 0, show: false });
+  }>({ x: 0, y: 0, open: false });
 
   return {
     triggerElement: contextMenu.triggerElement,
-    show: contextMenu.show,
+    open: contextMenu.open,
     position: { x: contextMenu.x, y: contextMenu.y },
     data: contextMenu.data,
     set: ({
@@ -25,10 +25,10 @@ export const useContextMenu = <T = undefined>() => {
       data?: T;
       triggerElement?: HTMLElement;
     }) => {
-      setContextMenu({ x, y, show: true, data, triggerElement });
+      setContextMenu({ x, y, open: true, data, triggerElement });
     },
     hide: () => {
-      setContextMenu({ x: 0, y: 0, show: false });
+      setContextMenu({ x: 0, y: 0, open: false });
     },
     toggle: ({
       x,
@@ -41,10 +41,10 @@ export const useContextMenu = <T = undefined>() => {
       data?: T;
       triggerElement: HTMLElement;
     }) => {
-      if (contextMenu.show) {
-        setContextMenu({ x: 0, y: 0, show: false });
+      if (contextMenu.open) {
+        setContextMenu({ x: 0, y: 0, open: false });
       } else {
-        setContextMenu({ x, y, show: true, data, triggerElement });
+        setContextMenu({ x, y, open: true, data, triggerElement });
       }
     },
   };

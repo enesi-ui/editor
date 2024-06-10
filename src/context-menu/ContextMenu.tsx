@@ -3,7 +3,7 @@ import useWindowDimensions from "~/utility/use-window-dimensions.ts";
 
 export type ContextMenuProps = {
   children: React.ReactNode;
-  show: boolean;
+  open: boolean;
   header?: string;
   onOutsideClick?: () => void;
   triggerElement?: HTMLElement;
@@ -11,7 +11,7 @@ export type ContextMenuProps = {
   yOffset?: number;
 };
 export const ContextMenu = ({
-  show,
+                              open,
   children,
   triggerElement,
   header,
@@ -26,7 +26,7 @@ export const ContextMenu = ({
   const yOffSet = yOffset ?? 0;
 
   useEffect(() => {
-    if (!ref.current || !triggerElement || !show) return;
+    if (!ref.current || !triggerElement || !open) return;
     const origin = triggerElement.getBoundingClientRect();
     const { width: divWith, height: divHeight } =
       ref.current.getBoundingClientRect();
@@ -40,7 +40,7 @@ export const ContextMenu = ({
     } else {
       ref.current.style.top = `${origin.bottom + yOffSet}px`;
     }
-  }, [width, height, ref, triggerElement, show, xOffset, yOffset]);
+  }, [xOffSet, yOffSet, width, height, ref, triggerElement, open, xOffset, yOffset]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -58,7 +58,7 @@ export const ContextMenu = ({
     };
   }, [ref, onOutsideClick, triggerElement]);
 
-  if (!show) return null;
+  if (!open) return null;
   return (
     <div
       ref={ref}
