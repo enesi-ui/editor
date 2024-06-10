@@ -42,5 +42,5 @@ jobs:
           uses: docker/build-push-action@v5
           with:
             push: true
-            tags: enesi/canvas-service:latest
+            tags: enesi/editor:latest
 
