@@ -6,10 +6,10 @@ export interface CanvasObject {
   showHighlight(): void;
   hideHighlight(): void;
   getOrigin(): { x: number; y: number };
-  setOrigin(x: number, y: number, round?: boolean): void;
+  setOrigin(x: number, y: number, round?: boolean, emit?: boolean): void;
   getSize(): { width: number; height: number };
-  setSize(width: number, height: number, round?: boolean): void;
-  setSizeOrigin(x: number, y: number, width: number, height: number, round?: boolean): void;
+  setSize(width: number, height: number, round?: boolean, emit?: boolean): void;
+  setSizeOrigin(x: number, y: number, width: number, height: number, round?: boolean, emit?: boolean): void;
   get id(): string | undefined;
 
   clear(): void;

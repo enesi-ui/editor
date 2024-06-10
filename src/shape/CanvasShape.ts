@@ -1,11 +1,11 @@
 import { StrokePropertyData } from "~/properties-panel/StrokePropertyData.ts";
 import { CanvasObject } from "~/canvas/CanvasObject.ts";
+import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 
 export interface Shape {
   id: string;
   type: "ELLIPSE" | "RECTANGLE";
-  fill: string;
-  fillAlpha: number;
+  fills: FillPropertyData[];
   strokes: StrokePropertyData[];
   container: {
     x: number;
@@ -23,16 +23,15 @@ export interface Shape {
 
 export interface CanvasShape extends CanvasObject {
   updateGraphics: (data: Shape) => void;
-  setFill: (color: string, alpha: number) => void;
-  setStrokes: (strokes: StrokePropertyData[]) => void;
+  setFill: (fills: FillPropertyData[], emit?: boolean) => void;
+  setStrokes: (strokes: StrokePropertyData[], emit?: boolean) => void;
 
-  getFill(): string;
+  getFill(): FillPropertyData[];
   getStroke(): StrokePropertyData[];
-
-  createStyle(className: string): string;
 
   serialize(): Omit<Shape, "id">;
 
   // top left corner of shape
   getImageData(): ImageData;
+
 }

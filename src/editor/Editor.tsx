@@ -17,6 +17,8 @@ function Editor() {
     width - propertiesPanelWidth - leftPanelWidth,
   );
 
+  const [inCanvas, setInCanvas] = useState(false);
+
   useEffect(() => {
     if (!pixiRef.current) return;
     pixiRef.current.appendChild(app.view);
@@ -35,11 +37,13 @@ function Editor() {
         <ShapeFactory />
       </Toolbar>
       <LeftPanel width={leftPanelWidth}>
-        <div>left panel</div>
+        <div className="p-2">Layers</div>
       </LeftPanel>
       <PropertiesPanel width={propertiesPanelWidth} />
-      <KeyboardControl />
+      <KeyboardControl inCanvas={inCanvas} />
       <div
+        onMouseEnter={() => setInCanvas(true)}
+        onMouseLeave={() => setInCanvas(false)}
         ref={pixiRef}
         id={"pixi-container"}
         style={{ width: canvasWidth, left: leftPanelWidth }}

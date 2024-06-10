@@ -3,6 +3,4 @@ export type ShapePropertiesData = {
   height: string;
   x: string;
   y: string;
-  fill: string;
-  fillAlpha: number;
 }

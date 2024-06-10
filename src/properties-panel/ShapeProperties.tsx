@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { usePixi } from "~/pixi/pixiContext.ts";
 import { UPDATE_PRIORITY } from "@pixi/ticker";
 import { ShapePropertiesData } from "~/properties-panel/ShapePropertiesData.ts";
-import { ColorProperty } from "~/properties-panel/ColorProperty.tsx";
 import { StrokeProperty } from "~/properties-panel/StrokeProperty.tsx";
 import { round } from "~/utility/round.ts";
-import { SectionButton } from "~/core/SectionButton.tsx";
+import { FillProperty } from "~/properties-panel/FillProperty.tsx";
 
 export interface ShapePropertiesProps {
   canvasShape: CanvasShape;
@@ -15,7 +14,7 @@ export interface ShapePropertiesProps {
 
 export const ShapeProperties = (props: ShapePropertiesProps) => {
   const app = usePixi();
-  const canvasShape = props.canvasShape;
+  const { canvasShape } = props;
 
   const shapeId = canvasShape.id;
 
@@ -49,29 +48,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
     y: y.toString(),
     width: width.toString(),
     height: height.toString(),
-    fill: "#ffffff",
-    fillAlpha: 1,
   });
-
-  const handleFillChange = (value: string) => {
-    canvasShape.setFill(value, properties.fillAlpha);
-    setProperties((prev) => {
-      return {
-        ...prev,
-        fill: value,
-      };
-    });
-  };
-
-  const handleFillAlphaChange = (value: number) => {
-    canvasShape.setFill(properties.fill, value);
-    setProperties((prev) => {
-      return {
-        ...prev,
-        fillAlpha: value,
-      };
-    });
-  };
 
   const handlePropertyChange = async (
     id: "x" | "y" | "width" | "height",
@@ -103,6 +80,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
       parseFloat(roundedWidth),
       parseFloat(roundedHeight),
       false,
+      true,
     );
   };
 
@@ -147,24 +125,9 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         onFinish={() => handlePropertyFinish()}
       />
       <div className="divider col-start-1 col-end-3"></div>
-      <SectionButton
-        onClick={() => console.log("Add Fill")}
-        ariaLabel={"Add fill"}
-        label={"Fill"}
-        icon={"+"}
-        className={'col-start-1 col-end-3'}
-      />
-      <ColorProperty
-        label="fill"
-        value={properties.fill}
-        alpha={properties.fillAlpha}
-        id="fill"
-        onChange={handleFillChange}
-        onChangeAlpha={handleFillAlphaChange}
-        className="col-start-1 col-end-3"
-      />
+      <FillProperty shape={canvasShape} className={"col-start-1 col-end-3"} />
       <div className="divider col-start-1 col-end-3"></div>
-      <StrokeProperty shape={canvasShape} className={'col-start-1 col-end-3'} />
+      <StrokeProperty shape={canvasShape} className={"col-start-1 col-end-3"} />
     </div>
   );
 };

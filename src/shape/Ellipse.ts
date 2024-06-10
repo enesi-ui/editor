@@ -8,6 +8,7 @@ import { CanvasShape, Shape } from "~/shape/CanvasShape.ts";
 import { StrokePropertyData } from "~/properties-panel/StrokePropertyData.ts";
 import { CanvasObject } from "~/canvas/CanvasObject.ts";
 import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
+import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 
 export class Ellipse implements CanvasShape {
   private readonly highlight: Graphics;
@@ -20,6 +21,7 @@ export class Ellipse implements CanvasShape {
   private highlightWidth = 2;
   private highlighted = false;
   public readonly id: string | undefined;
+  private fills: FillPropertyData[] = [];
 
   constructor(
     origin: { x: number; y: number },
@@ -50,19 +52,23 @@ export class Ellipse implements CanvasShape {
       .endFill();
 
     if (options?.data) {
-      this.setData(options?.data);
+      this.init(options?.data);
       this.id = options?.data.id;
     }
     new CanvasObjectSelectMove(app, this);
   }
 
   async updateGraphics(data: Shape): Promise<void> {
-    await this.setOrigin(data.container.x, data.container.y, false);
-    await this.setSize(data.container.width, data.container.height, false);
-    await this.setFill(data.fill, data.fillAlpha, false);
-    await this.setStrokes(data.strokes, false);
+    this.setSizeOrigin(
+      data.container.x,
+      data.container.y,
+      data.container.width,
+      data.container.height,
+    );
+    this.setFill(data.fills);
+    this.setStrokes(data.strokes);
   }
-  getFill(): string {
+  getFill(): FillPropertyData[] {
     throw new Error("Method not implemented.");
   }
   getStroke(): StrokePropertyData[] {
@@ -130,16 +136,17 @@ export class Ellipse implements CanvasShape {
     };
   }
 
-  setFill(color: string, alpha: number, emit: boolean = true) {
+  setFill(fills: FillPropertyData[], emit: boolean = false) {
     const { width, height } = this.graphics;
-    this.graphics
-      .clear()
-      .beginFill(color, alpha)
-      .drawEllipse(0, 0, width, height)
-      .endFill();
-    this.fill = color;
-    this.fillAlpha = alpha;
-    if (this.id && emit)
+    this.graphics.clear();
+    fills.forEach((fillProperty) => {
+      this.graphics
+        .beginFill(fillProperty.color, fillProperty.alpha)
+        .drawRect(0, 0, width, height)
+        .endFill();
+    });
+
+    if (emit && this.id)
       this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
@@ -211,20 +218,19 @@ export class Ellipse implements CanvasShape {
     this.highlighted = false;
   }
 
-  createStyle(className: string): string {
-    return `<style> .${className} { width: ${this.width}px; height: ${this.height}px; background-color: ${this.fill}; color: white; border: none;}</style>`;
-  }
-
   serialize(): Omit<Shape, "id"> {
     throw new Error("Method not implemented.");
   }
 
-  setData(data: Omit<Shape, "id">) {
-    this.graphics
-      .clear()
-      .beginFill(data.fill, data.fillAlpha)
-      .drawRect(0, 0, data.graphics.width, data.graphics.height)
-      .endFill();
+  init(data: Omit<Shape, "id">) {
+    this.fills = data.fills;
+    this.graphics.clear();
+    this.fills.forEach((fillProperty) => {
+      this.graphics
+        .beginFill(fillProperty.color, fillProperty.alpha)
+        .drawRect(0, 0, data.graphics.width, data.graphics.height)
+        .endFill();
+    });
     this.setStrokes(data.strokes);
   }
 

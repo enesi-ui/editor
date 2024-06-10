@@ -23,7 +23,7 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
     };
     setStrokeProperty((prev) => {
       const newStrokes = [...prev, newStrokeProperty];
-      shape.setStrokes(newStrokes);
+      shape.setStrokes(newStrokes, true);
       return newStrokes;
     });
   };
@@ -35,7 +35,7 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
         ...oldStroke,
         color: value,
       };
-      shape.setStrokes(prev);
+      shape.setStrokes(prev, true);
       return prev;
     });
   };
@@ -47,7 +47,7 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
         ...oldStroke,
         alpha: value,
       };
-      shape.setStrokes(prev);
+      shape.setStrokes(prev, true);
       return prev;
     });
   };

@@ -9,6 +9,7 @@ import { StrokePropertyData } from "~/properties-panel/StrokePropertyData.ts";
 import { roundNumber } from "~/utility/round.ts";
 import { CanvasObject } from "~/canvas/CanvasObject.ts";
 import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
+import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 
 export class Rectangle implements CanvasShape {
   private readonly graphics: Graphics;
@@ -16,14 +17,15 @@ export class Rectangle implements CanvasShape {
   private readonly highlight: Graphics;
   private readonly container: Container;
   private strokes: StrokePropertyData[] = [];
+  private fills: FillPropertyData[] = [];
   private currentStrokes: Graphics[] = [];
   private readonly handles: Graphics[] = [];
   private selected = false;
-  private fill = "#ffffff";
-  private fillAlpha = 1;
-  private highlightColor = "#0f79fb";
+  private initFill = "#ffffff";
+  private initFillAlpha = 1;
+  private highlightColor = "#c792e9";
   private highlightWidth = 2;
-  private handlesColor = "#0f79fb";
+  private handlesColor = "#c792e9";
   private handleFill = "#ffffff";
   private handlesWidth = 1;
   private handleSize = 8;
@@ -44,9 +46,15 @@ export class Rectangle implements CanvasShape {
     this.container.x = origin.x;
     this.container.y = origin.y;
 
+    this.fills = [
+      {
+        color: this.initFill,
+        alpha: this.initFillAlpha,
+      },
+    ];
     this.graphics = this.container.addChild(
       new Graphics()
-        .beginFill(this.fill, this.fillAlpha)
+        .beginFill(this.initFill, this.initFillAlpha)
         .drawRect(0, 0, 0, 0)
         .endFill(),
     );
@@ -120,32 +128,35 @@ export class Rectangle implements CanvasShape {
     });
 
     if (options?.data) {
-      this.setData(options.data);
+      this.init(options.data);
       this.id = options.data.id;
     }
 
     new CanvasObjectSelectMove(app, this);
   }
 
-  getFill(): string {
-    return this.fill;
+  getFill(): FillPropertyData[] {
+    return this.fills;
   }
+
   getStroke(): StrokePropertyData[] {
     return this.strokes;
   }
 
-  resizeHandle1 = (event: FederatedPointerEvent) => {
+  resizeHandle1 = async (event: FederatedPointerEvent) => {
     const { x: localX } = this.container.toLocal(event.global);
     const { height } = this.getSize();
 
     const pointerY = event.global.y;
 
     const { x, y } = this.getOrigin();
-    this.setOrigin(x, pointerY);
-
-    this.setSize(localX, height - pointerY + y);
-    this.update();
+    this.setSizeOrigin(x, pointerY, localX, height - pointerY + y, true);
     this.setStrokes(this.strokes);
+    if (this.id)
+      await this.options?.onUpdate?.({
+        ...this.serialize(),
+        id: this.id,
+      });
   };
 
   resizeHandle2 = (event: FederatedPointerEvent) => {
@@ -154,19 +165,20 @@ export class Rectangle implements CanvasShape {
 
     const pointerX = event.global.x;
     const { x, y } = this.getOrigin();
-    this.setOrigin(pointerX, y);
-
-    this.setSize(width - pointerX + x, localY);
-    this.update();
+    this.setSizeOrigin(pointerX, y, width - pointerX + x, localY, true);
     this.setStrokes(this.strokes);
   };
 
-  resizeHandle3 = (event: FederatedPointerEvent) => {
+  resizeHandle3 = async (event: FederatedPointerEvent) => {
     const { x, y } = this.container.toLocal(event.global);
 
-    this.setSize(x, y);
-    this.update();
+    this.setSize(x, y, true);
     this.setStrokes(this.strokes);
+    if (this.id)
+      await this.options?.onUpdate?.({
+        ...this.serialize(),
+        id: this.id,
+      });
   };
 
   resizeHandle0 = (event: FederatedPointerEvent) => {
@@ -176,13 +188,22 @@ export class Rectangle implements CanvasShape {
     const pointerY = event.global.y;
 
     const { x, y } = this.getOrigin();
-    this.setOrigin(pointerX, pointerY);
-    this.setSize(width - pointerX + x, height - pointerY + y);
-    this.update();
+    this.setSizeOrigin(
+      pointerX,
+      pointerY,
+      width - pointerX + x,
+      height - pointerY + y,
+      true,
+    );
     this.setStrokes(this.strokes);
+    if (this.id)
+      this.options?.onUpdate?.({
+        ...this.serialize(),
+        id: this.id,
+      });
   };
 
-  private update() {
+  private updateGuides() {
     this.highlight
       .clear()
       .lineStyle(this.highlightWidth, this.highlightColor)
@@ -239,100 +260,89 @@ export class Rectangle implements CanvasShape {
       .endFill();
   }
 
-  getOrigin(): { x: number; y: number } {
-    return {
-      x: this.container.x,
-      y: this.container.y,
-    };
-  }
-
-  async setOrigin(
+  setOrigin(
     x: number,
     y: number,
     round: boolean = true,
-    emit: boolean = true,
-  ): Promise<void> {
+    emit: boolean = false,
+  ): void {
     this.container.x = round ? roundNumber(x) : x;
     this.container.y = round ? roundNumber(y) : y;
-    if (this.id && emit) {
-      await this.options?.onUpdate?.({
+    if (emit && this.id)
+      this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
       });
-    }
   }
 
-  async setSize(
+  setSize(
     width: number,
     height: number,
     round: boolean = true,
-    emit: boolean = true,
-  ): Promise<void> {
+    emit: boolean = false,
+  ): void {
     const roundedWidth = round ? roundNumber(width) : width;
     const roundedHeight = round ? roundNumber(height) : height;
-    this.graphics
-      .clear()
-      .beginFill(this.fill, this.fillAlpha)
-      .drawRect(0, 0, roundedWidth, roundedHeight)
-      .endFill();
-    this.update();
-    if (this.id && emit)
-      await this.options?.onUpdate?.({
+    this.graphics.clear();
+    this.fills.forEach((fillProperty) => {
+      this.graphics
+        .beginFill(fillProperty.color, fillProperty.alpha)
+        .drawRect(0, 0, roundedWidth, roundedHeight)
+        .endFill();
+    });
+    this.updateGuides();
+    if (emit && this.id)
+      this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
       });
   }
 
-  async setSizeOrigin(
+  setSizeOrigin(
     x: number,
     y: number,
     width: number,
     height: number,
     round?: boolean,
+    emit?: boolean,
   ) {
     this.container.x = round ? roundNumber(x) : x;
     this.container.y = round ? roundNumber(y) : y;
     const roundedWidth = round ? roundNumber(width) : width;
     const roundedHeight = round ? roundNumber(height) : height;
-    this.graphics
-      .clear()
-      .beginFill(this.fill, this.fillAlpha)
-      .drawRect(0, 0, roundedWidth, roundedHeight)
-      .endFill();
-    this.update();
-
-    if (this.id)
-      await this.options?.onUpdate?.({
+    this.graphics.clear();
+    this.fills.forEach((fillProperty) => {
+      this.graphics
+        .beginFill(fillProperty.color, fillProperty.alpha)
+        .drawRect(0, 0, roundedWidth, roundedHeight)
+        .endFill();
+    });
+    this.updateGuides();
+    if (emit && this.id)
+      this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
       });
   }
 
-  getSize(): { width: number; height: number } {
-    return {
-      width: this.graphics.width,
-      height: this.graphics.height,
-    };
-  }
-
-  async setFill(color: string, alpha: number, emit: boolean = true) {
+  setFill(fills: FillPropertyData[], emit: boolean = false) {
     const { width, height } = this.graphics;
-    this.graphics
-      .clear()
-      .beginFill(color, alpha)
-      .drawRect(0, 0, width, height)
-      .endFill();
-    this.fill = color;
-    this.fillAlpha = alpha;
-    if (this.id && emit) {
-      await this.options?.onUpdate?.({
+    this.graphics.clear();
+    fills.forEach((fillProperty) => {
+      this.graphics
+        .beginFill(fillProperty.color, fillProperty.alpha)
+        .drawRect(0, 0, width, height)
+        .endFill();
+    });
+
+    if (emit && this.id)
+      this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
       });
-    }
   }
 
-  async setStrokes(strokes: StrokePropertyData[], emit: boolean = true) {
+  setStrokes(strokes: StrokePropertyData[], emit: boolean = false) {
     this.currentStrokes.map((currentStroke) =>
       this.container.removeChild(currentStroke),
     );
@@ -355,13 +365,11 @@ export class Rectangle implements CanvasShape {
       this.currentStrokes.push(this.container.addChild(stroke));
     });
     this.strokes = strokes;
-
-    if (this.id && emit) {
-      await this.options?.onUpdate?.({
+    if (emit && this.id)
+      this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
       });
-    }
   }
 
   get width() {
@@ -378,6 +386,19 @@ export class Rectangle implements CanvasShape {
     return this.container.y;
   }
 
+  getSize(): { width: number; height: number } {
+    return {
+      width: this.graphics.width,
+      height: this.graphics.height,
+    };
+  }
+
+  getOrigin(): { x: number; y: number } {
+    return {
+      x: this.container.x,
+      y: this.container.y,
+    };
+  }
   public deselect() {
     if (!this.selected) return;
     this.container.removeChild(this.selectGraphics);
@@ -405,15 +426,9 @@ export class Rectangle implements CanvasShape {
     this.highlighted = false;
   }
 
-  createStyle(className: string): string {
-    return `<style> .${className} { width: ${this.width}px; height: ${this.height}px; background-color: ${this.fill}; color: white; border: none;}</style>`;
-  }
-
   serialize(): Omit<Shape, "id"> {
     return {
       type: "RECTANGLE",
-      fill: this.fill,
-      fillAlpha: this.fillAlpha,
       container: {
         x: this.container.x,
         y: this.container.y,
@@ -431,29 +446,32 @@ export class Rectangle implements CanvasShape {
         alpha: stroke.alpha,
         width: stroke.width,
       })),
+      fills: this.fills,
     };
   }
 
-  async updateGraphics(data: Shape) {
-    await this.setOrigin(data.container.x, data.container.y, false, false);
-    await this.setSize(
+  updateGraphics(data: Shape) {
+    this.setSizeOrigin(
+      data.container.x,
+      data.container.y,
       data.container.width,
       data.container.height,
-      false,
-      false,
     );
-    await this.setFill(data.fill, data.fillAlpha, false);
-    await this.setStrokes(data.strokes, false);
+    this.setFill(data.fills);
+    this.setStrokes(data.strokes);
   }
 
-  setData(data: Omit<Shape, "id">) {
-    this.graphics
-      .clear()
-      .beginFill(data.fill, data.fillAlpha)
-      .drawRect(0, 0, data.graphics.width, data.graphics.height)
-      .endFill();
+  init(data: Omit<Shape, "id" | "container">) {
+    this.fills = data.fills;
+    this.graphics.clear();
+    this.fills.forEach((fillProperty) => {
+      this.graphics
+        .beginFill(fillProperty.color, fillProperty.alpha)
+        .drawRect(0, 0, data.graphics.width, data.graphics.height)
+        .endFill();
+    });
     this.setStrokes(data.strokes);
-    this.update();
+    this.updateGuides();
   }
   getImageData(): ImageData {
     const imageData = this.app.renderer.extract
