@@ -22,6 +22,7 @@ export interface Shape {
 }
 
 export interface CanvasShape extends CanvasObject {
+  updateGraphics: (data: Shape) => void;
   setFill: (color: string, alpha: number) => void;
   setStrokes: (strokes: StrokePropertyData[]) => void;
 

@@ -246,10 +246,15 @@ export class Rectangle implements CanvasShape {
     };
   }
 
-  async setOrigin(x: number, y: number, round: boolean = true): Promise<void> {
+  async setOrigin(
+    x: number,
+    y: number,
+    round: boolean = true,
+    emit: boolean = true,
+  ): Promise<void> {
     this.container.x = round ? roundNumber(x) : x;
     this.container.y = round ? roundNumber(y) : y;
-    if (this.id) {
+    if (this.id && emit) {
       await this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
@@ -261,6 +266,7 @@ export class Rectangle implements CanvasShape {
     width: number,
     height: number,
     round: boolean = true,
+    emit: boolean = true,
   ): Promise<void> {
     const roundedWidth = round ? roundNumber(width) : width;
     const roundedHeight = round ? roundNumber(height) : height;
@@ -270,7 +276,7 @@ export class Rectangle implements CanvasShape {
       .drawRect(0, 0, roundedWidth, roundedHeight)
       .endFill();
     this.update();
-    if (this.id)
+    if (this.id && emit)
       await this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
@@ -309,7 +315,7 @@ export class Rectangle implements CanvasShape {
     };
   }
 
-  async setFill(color: string, alpha: number) {
+  async setFill(color: string, alpha: number, emit: boolean = true) {
     const { width, height } = this.graphics;
     this.graphics
       .clear()
@@ -318,7 +324,7 @@ export class Rectangle implements CanvasShape {
       .endFill();
     this.fill = color;
     this.fillAlpha = alpha;
-    if (this.id) {
+    if (this.id && emit) {
       await this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
@@ -326,7 +332,7 @@ export class Rectangle implements CanvasShape {
     }
   }
 
-  async setStrokes(strokes: StrokePropertyData[]) {
+  async setStrokes(strokes: StrokePropertyData[], emit: boolean = true) {
     this.currentStrokes.map((currentStroke) =>
       this.container.removeChild(currentStroke),
     );
@@ -350,7 +356,7 @@ export class Rectangle implements CanvasShape {
     });
     this.strokes = strokes;
 
-    if (this.id) {
+    if (this.id && emit) {
       await this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
@@ -426,6 +432,18 @@ export class Rectangle implements CanvasShape {
         width: stroke.width,
       })),
     };
+  }
+
+  async updateGraphics(data: Shape) {
+    await this.setOrigin(data.container.x, data.container.y, false, false);
+    await this.setSize(
+      data.container.width,
+      data.container.height,
+      false,
+      false,
+    );
+    await this.setFill(data.fill, data.fillAlpha, false);
+    await this.setStrokes(data.strokes, false);
   }
 
   setData(data: Omit<Shape, "id">) {

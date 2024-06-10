@@ -26,10 +26,16 @@ export const useCanvasShapes = () => {
   useEffect(() => {
     shapes.filter(notEmpty).map((shape) => {
       const existing = canvasShapes.current.find((s) => s.id === shape.id);
-      if (existing) {
+      // if shape exists and is not the current object, update it (update is coming from server)
+      if (existing && existing.id !== currentObject?.id) {
+        existing.updateGraphics(shape);
+        return;
+      // if shape exists and is the current object, do not update (update is coming from user, optimistic)
+      } else if (existing) {
         return;
       }
 
+      // if shape does not exist, create it (coming from server)
       if (shape.type === "RECTANGLE") {
         canvasShapes.current.push(
           new Rectangle(shape.container, app, {
@@ -44,7 +50,7 @@ export const useCanvasShapes = () => {
         console.error("unknown shape type");
       }
     });
-  }, [update, app, shapes]);
+  }, [update, app, shapes, currentObject]);
 
   return {
     setCurrentObject: handleObjectSelect,
