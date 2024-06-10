@@ -1,12 +1,13 @@
 interface ColorPropertyProps {
   label: string;
   value: string;
-  alpha: number;
+  alpha?: number;
   id: string;
   onChange?: (value: string) => void;
   onChangeAlpha?: (value: number) => void;
   showLabel?: boolean;
   className?: string;
+  hideValue?: boolean;
 }
 export const ColorProperty = (props: ColorPropertyProps) => {
   const {
@@ -16,6 +17,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
     id,
     onChange,
     onChangeAlpha,
+    hideValue,
     className,
     showLabel,
   } = props;
@@ -35,18 +37,22 @@ export const ColorProperty = (props: ColorPropertyProps) => {
           return onChange?.(e.target.value);
         }}
       />
-      <span className={"w-full"}>{value}</span>
-      <input
-        step={0.01}
-        id={`${id}-alpha`}
-        type="number"
-        defaultValue={alpha}
-        onChange={(e) => {
-          e.preventDefault();
-          return onChangeAlpha?.(parseFloat(e.target.value));
-        }}
-        className={"pl-1 w-full group-hover:border-l group-hover:border-base-content/20"}
-      />
+      {!hideValue && <span className={"w-full"}>{value}</span>}
+      {alpha !== undefined && (
+        <input
+          step={0.01}
+          id={`${id}-alpha`}
+          type="number"
+          defaultValue={alpha}
+          onChange={(e) => {
+            e.preventDefault();
+            return onChangeAlpha?.(parseFloat(e.target.value));
+          }}
+          className={
+            "pl-1 w-full group-hover:border-l group-hover:border-base-content/20"
+          }
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { usePixi } from "~/pixi/pixiContext.ts";
+import { ColorProperty } from "~/properties-panel/ColorProperty.tsx";
 
 export const PageProperty = () => {
   const app = usePixi();
@@ -7,18 +8,14 @@ export const PageProperty = () => {
   };
 
   return (
-    <div>
-      <h2 className="p-2">Page</h2>
-      <div className="flex flex-row justify-between p-2">
-        <input
-          className="w-12"
-          id="properties-panel-bg-color"
-          type="color"
-          value={app.renderer.background.color as string}
-          onChange={(e) => handleBgColorChange(e.target.value)}
-        />
-        <p className="">{app.renderer.background.color as string}</p>
-      </div>
-    </div>
-  )
-}
+    <ColorProperty
+      id={"page-bg-color"}
+      label="Page"
+      value={app.renderer.background.color as string}
+      onChange={(value) => handleBgColorChange(value)}
+      showLabel
+      hideValue
+      className={"mt-2 h-12 mx-2"}
+    />
+  );
+};

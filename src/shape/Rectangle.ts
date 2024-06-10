@@ -326,6 +326,7 @@ export class Rectangle implements CanvasShape {
   }
 
   setFill(fills: FillPropertyData[], emit: boolean = false) {
+    this.fills = fills;
     const { width, height } = this.graphics;
     this.graphics.clear();
     fills.forEach((fillProperty) => {

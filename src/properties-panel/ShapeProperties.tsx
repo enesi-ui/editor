@@ -85,7 +85,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
   };
 
   return (
-    <div className="grid grid-cols-2 px-0 gap-x-2 gap-y-1">
+    <div className="grid grid-cols-2 px-0 gap-x-2 gap-y-1 mx-2">
       <Property
         topBorder
         hoverEffect
