@@ -56,6 +56,19 @@ export class Ellipse implements CanvasShape {
     new CanvasObjectSelectMove(app, this);
   }
 
+  async updateGraphics(data: Shape): Promise<void> {
+    await this.setOrigin(data.container.x, data.container.y, false);
+    await this.setSize(data.container.width, data.container.height, false);
+    await this.setFill(data.fill, data.fillAlpha, false);
+    await this.setStrokes(data.strokes, false);
+  }
+  getFill(): string {
+    throw new Error("Method not implemented.");
+  }
+  getStroke(): StrokePropertyData[] {
+    throw new Error("Method not implemented.");
+  }
+
   getOrigin(): { x: number; y: number } {
     return {
       x: this.container.x,
@@ -63,17 +76,21 @@ export class Ellipse implements CanvasShape {
     };
   }
 
-  async setOrigin(x: number, y: number): Promise<void> {
+  async setOrigin(x: number, y: number, emit: boolean = true): Promise<void> {
     this.container.x = x;
     this.container.y = y;
-    if (this.id)
+    if (this.id && emit)
       await this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
       });
   }
 
-  async setSize(width: number, height: number): Promise<void> {
+  async setSize(
+    width: number,
+    height: number,
+    emit: boolean = true,
+  ): Promise<void> {
     this.graphics
       .clear()
       .beginFill(this.fill, this.fillAlpha)
@@ -84,7 +101,7 @@ export class Ellipse implements CanvasShape {
       .lineStyle(this.highlightWidth, this.highlightColor)
       .drawEllipse(0, 0, this.graphics.width / 2, this.graphics.height / 2)
       .endFill();
-    if (this.id)
+    if (this.id && emit)
       await this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
@@ -113,7 +130,7 @@ export class Ellipse implements CanvasShape {
     };
   }
 
-  setFill(color: string, alpha: number) {
+  setFill(color: string, alpha: number, emit: boolean = true) {
     const { width, height } = this.graphics;
     this.graphics
       .clear()
@@ -122,9 +139,14 @@ export class Ellipse implements CanvasShape {
       .endFill();
     this.fill = color;
     this.fillAlpha = alpha;
+    if (this.id && emit)
+      this.options?.onUpdate?.({
+        ...this.serialize(),
+        id: this.id,
+      });
   }
 
-  setStrokes(strokes: StrokePropertyData[]) {
+  setStrokes(strokes: StrokePropertyData[], emit: boolean = true) {
     strokes.forEach((stroke) => {
       const startCoordinate = stroke.width / 2;
       const strokes = new Graphics()
@@ -142,6 +164,12 @@ export class Ellipse implements CanvasShape {
         .endFill();
       this.container.addChild(strokes);
     });
+
+    if (this.id && emit)
+      this.options?.onUpdate?.({
+        ...this.serialize(),
+        id: this.id,
+      });
   }
 
   get width() {

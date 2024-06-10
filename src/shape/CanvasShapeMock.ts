@@ -2,6 +2,9 @@ import { CanvasShape } from "~/shape/CanvasShape.ts";
 import { vi } from "vitest";
 
 export const canvasShapeMock: CanvasShape = {
+  getFill: vi.fn(),
+  updateGraphics: vi.fn(),
+  getStroke: vi.fn(),
   id: 'mockshapeId',
   setFill: vi.fn(),
   setStrokes: vi.fn(),
