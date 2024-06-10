@@ -7,7 +7,7 @@ export const ShapeKeyboardControl = ({
   inCanvas
 }: {
   canvasShapeId: string;
-  inCanvas: boolean;
+  inCanvas?: boolean;
 }) => {
   const { remove } = useShapeRemove();
 

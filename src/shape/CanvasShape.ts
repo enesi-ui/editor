@@ -34,4 +34,5 @@ export interface CanvasShape extends CanvasObject {
   // top left corner of shape
   getImageData(): ImageData;
 
+  createStyle(className: string): string;
 }

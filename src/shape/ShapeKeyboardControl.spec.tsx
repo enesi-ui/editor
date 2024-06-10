@@ -27,7 +27,7 @@ describe("ShapeKeyboardControl", () => {
             setCurrentObject: mockCurrentObject,
           }}
         >
-          <ShapeKeyboardControl canvasShapeId={'shapeId'} />
+          <ShapeKeyboardControl inCanvas canvasShapeId={'shapeId'} />
         </CanvasObjectContext.Provider>
         ,
       </QueryWrapper>,
@@ -36,6 +36,28 @@ describe("ShapeKeyboardControl", () => {
     await user.keyboard("[Backspace]");
 
     expect(mockDelete).toHaveBeenCalled();
+  });
+
+  test("does not remove shape when delete key is pressed and inCanvas is false", async () => {
+    const mockCurrentObject = vi.fn();
+
+    const { user } = setup(
+      <QueryWrapper>
+        <CanvasObjectContext.Provider
+          value={{
+            currentObject: canvasShapeMock,
+            setCurrentObject: mockCurrentObject,
+          }}
+        >
+          <ShapeKeyboardControl canvasShapeId={'shapeId'} />
+        </CanvasObjectContext.Provider>
+        ,
+      </QueryWrapper>,
+    );
+
+    await user.keyboard("[Backspace]");
+
+    expect(mockDelete).not.toHaveBeenCalled();
   });
 
   test("deselects current object when delete key is pressed", async () => {
@@ -49,7 +71,7 @@ describe("ShapeKeyboardControl", () => {
             setCurrentObject: mockCurrentObject,
           }}
         >
-          <ShapeKeyboardControl canvasShapeId={'shapeId'} />
+          <ShapeKeyboardControl inCanvas canvasShapeId={'shapeId'} />
         </CanvasObjectContext.Provider>
         ,
       </QueryWrapper>,

@@ -506,4 +506,18 @@ export class Rectangle implements CanvasShape {
   clear() {
     this.container.destroy({ children: true });
   }
+
+  createStyle(className: string): string {
+    return `
+      .${className} {
+        position: absolute;
+        top: ${this.container.y}px;
+        left: ${this.container.x}px;
+        width: ${this.graphics.width}px;
+        height: ${this.graphics.height}px;
+        background-color: ${this.fills[0].color};
+        opacity: ${this.fills[0].alpha};
+      }
+    `;
+  }
 }

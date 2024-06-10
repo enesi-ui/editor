@@ -267,4 +267,8 @@ export class Ellipse implements CanvasShape {
   ) {
     this.container.off(event, handler);
   }
+
+  createStyle(): string {
+    throw new Error("Method not implemented.");
+  }
 }
