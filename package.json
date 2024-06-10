@@ -10,7 +10,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --host",
     "test": "vitest",
-    "docker:build": " docker build -t enesi/editor . --build-arg=\"VITE_API_ENDPOINT=http://localhost:3000\" --build-arg=\"VITE_APP_WS_URL=ws://localhost:8082\"",
+    "docker:build": "docker build -t enesi/editor .",
     "docker:push": "docker push enesi/editor:latest",
     "docker:run": "docker run -p 4173:4173 enesi/editor:latest"
   },
