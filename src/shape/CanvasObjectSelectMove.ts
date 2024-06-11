@@ -11,7 +11,7 @@ export class CanvasObjectSelectMove {
       event.stopPropagation();
 
       const local = event.getLocalPosition(this.app.stage);
-      this.canvasObject.setOrigin(local.x - dragPoint.x, local.y - dragPoint.y);
+      this.canvasObject.setOrigin(local.x - dragPoint.x, local.y - dragPoint.y, true, true);
     };
     const handleDragStart = (event: FederatedPointerEvent) => {
       event.stopPropagation();

@@ -32,6 +32,8 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         };
       });
     };
+    app.ticker.add(tickerCallback, null, UPDATE_PRIORITY.LOW);
+
     canvasShape.on("pointerover", () => {
       app.ticker.add(tickerCallback, null, UPDATE_PRIORITY.LOW);
     });
