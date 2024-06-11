@@ -6,7 +6,7 @@ export const Root = () => {
     <div className="mt-64 mx-auto flex h-fit w-fit">
       <Link to="/editor">
         <button className="btn btn-circle btn-lg">
-          <LogoIcon />
+          <LogoIcon className="text-primary" />
         </button>
       </Link>
       <Outlet />
