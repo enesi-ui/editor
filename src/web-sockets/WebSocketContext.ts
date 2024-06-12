@@ -1,4 +1,10 @@
 import { createContext } from "react";
 
-export const webSocket = new WebSocket(import.meta.env.VITE_APP_WS_URL as string);
-export const WebSocketContext = createContext<WebSocket | undefined>(undefined);
+export interface WebSocketInterface {
+  webSocket: WebSocket;
+  name: string;
+  ready: boolean;
+}
+export const WebSocketContext = createContext<WebSocketInterface | undefined>(
+  undefined,
+);

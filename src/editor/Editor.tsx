@@ -6,6 +6,7 @@ import { Toolbar } from "~/toolbar/Toolbar.tsx";
 import { LeftPanel } from "~/left-panel/LeftPanel.tsx";
 import useWindowDimensions from "~/utility/use-window-dimensions.ts";
 import { KeyboardControl } from "~/keyboard-control/KeyboardControl.tsx";
+import { useCanvasShapes } from "~/canvas/useCanvasShapes.ts";
 
 function Editor() {
   const app = usePixi();
@@ -27,6 +28,8 @@ function Editor() {
     setCanvasWidth(width - propertiesPanelWidth - leftPanelWidth);
     app.resizeTo = pixiRef.current;
   }, [app, pixiRef, width, leftPanelWidth, propertiesPanelWidth]);
+
+  useCanvasShapes();
 
   return (
     <div

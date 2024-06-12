@@ -1,5 +1,6 @@
-import { useMutation, useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { useShapesWebSocket } from "~/api/useShapesWebSocket.ts";
+import notEmpty from "~/utility/notEmpty.ts";
 
 export const SHAPES_KEY = "shapes";
 export const useShapes = () => {
@@ -18,14 +19,10 @@ export const useShapes = () => {
       })) ?? [],
   });
 
-  const mutation = useMutation({
-    mutationFn: api.post,
-  });
+  const shapes = query.map((q) => q.data).filter(notEmpty);
 
   return {
     ...query,
-    shapes: query.map((q) => q.data),
-    post: mutation.mutateAsync,
-    postSync: mutation.mutate,
+    shapes: shapes.length ? shapes : undefined,
   };
 };

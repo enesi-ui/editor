@@ -1,5 +1,5 @@
 import { describe, test, vi, expect, beforeEach } from "vitest";
-import { setup } from "~/tests/setup.ts";
+import { setup } from "~/tests/setup";
 import { ShapeKeyboardControl } from "~/shape/ShapeKeyboardControl.tsx";
 import { canvasShapeMock } from "~/shape/CanvasShapeMock.ts";
 import { QueryWrapper } from "~/tests/QueryWrapper.tsx";

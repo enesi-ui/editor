@@ -11,9 +11,9 @@ import { EllipseIcon } from "~/icon/EllipseIcon.tsx";
 import { Ellipse } from "~/shape/Ellipse.ts";
 import { useToolsContext } from "~/tool/useToolsContext.ts";
 import { Tools } from "~/tool/Tools.ts";
-import { useShapes } from "~/shape/useShapes.ts";
 import { CanvasShapeCompletionTracker } from "~/shape/CanvasShapeCompletionTracker.ts";
 import { useContextMenu } from "~/context-menu/useContextMenu.ts";
+import { useShapesPost } from "~/shape/useShapesPost.ts";
 
 export type FactoryClassType = typeof Rectangle | typeof Ellipse;
 
@@ -41,7 +41,7 @@ export const ShapeFactory = () => {
 
   const { tool, setTool } = useToolsContext();
 
-  const { post } = useShapes();
+  const { post } = useShapesPost();
 
   const { hide, open, set, triggerElement } = useContextMenu();
 

@@ -8,7 +8,7 @@ const usePrevious = (value: unknown[], initialValue: unknown[]) => {
   return ref.current;
 };
 
-const useEffectDebugger = (effectHook: (...unknown: []) => void, dependencies: object[], dependencyNames = []) => {
+const useEffectDebugger = (effectHook: (...unknown: []) => void, dependencies: (object | null)[], dependencyNames = []) => {
   const previousDeps = usePrevious(dependencies, []);
 
   const changedDeps = dependencies.reduce((accum, dependency, index) => {
@@ -26,7 +26,7 @@ const useEffectDebugger = (effectHook: (...unknown: []) => void, dependencies: o
     return accum;
   }, {});
 
-  if (Object.keys(changedDeps).length) {
+  if (changedDeps && Object.keys(changedDeps).length) {
     console.log("[use-effect-debugger] ", changedDeps);
   }
 

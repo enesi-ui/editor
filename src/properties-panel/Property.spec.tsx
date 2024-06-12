@@ -1,5 +1,5 @@
 import { describe, test, expect, vi } from "vitest";
-import { setup, screen } from "~/tests/setup.ts";
+import { setup, screen } from "~/tests/setup";
 import { Property } from "~/properties-panel/Property.tsx";
 
 describe("Property", () => {

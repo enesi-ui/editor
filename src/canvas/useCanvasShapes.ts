@@ -1,11 +1,10 @@
 import { CanvasShape } from "~/shape/CanvasShape.ts";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Rectangle } from "~/shape/Rectangle.ts";
 import { usePixi } from "~/pixi/pixiContext.ts";
 import { useShapes } from "~/shape/useShapes.ts";
 import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
-import { CanvasObject } from "~/canvas/CanvasObject.ts";
-import notEmpty from "~/utility/notEmpty.ts";
+import { CanvasObjectContext } from "~/canvas/CanvasObjectContext.ts";
 
 // todo unit test
 export const useCanvasShapes = () => {
@@ -13,24 +12,19 @@ export const useCanvasShapes = () => {
   const { update } = useShapeUpdate();
   const { shapes } = useShapes();
 
-  const app = usePixi();
-  const [currentObject, setCurrentObject] = useState<CanvasObject | null>(null);
+  const { currentObject, setCurrentObject } = useContext(CanvasObjectContext);
 
-  const handleObjectSelect = (object: CanvasObject | null) => {
-    setCurrentObject((prev) => {
-      if (prev) prev.deselect();
-      return object;
-    });
-  };
+  const app = usePixi();
 
   useEffect(() => {
-    shapes.filter(notEmpty).map((shape) => {
-      const existing = canvasShapes.current.find((s) => s.id === shape.id);
+    if (!shapes) return;
+    shapes.map((shape) => {
+      const existing = canvasShapes.current.find((canvasShape) => canvasShape.id === shape.id);
       // if shape exists and is not the current object, update it (update is coming from server)
       if (existing && existing.id !== currentObject?.id) {
         existing.updateGraphics(shape);
         return;
-      // if shape exists and is the current object, do not update (update is coming from user, optimistic)
+        // if shape exists and is the current object, do not update (update is coming from user, optimistic)
       } else if (existing) {
         return;
       }
@@ -39,7 +33,7 @@ export const useCanvasShapes = () => {
       if (shape.type === "RECTANGLE") {
         canvasShapes.current.push(
           new Rectangle(shape.container, app, {
-            onSelect: handleObjectSelect,
+            onSelect: setCurrentObject,
             onUpdate: update,
             data: shape,
           }),
@@ -50,10 +44,6 @@ export const useCanvasShapes = () => {
         console.error("unknown shape type");
       }
     });
-  }, [update, app, shapes, currentObject]);
-
-  return {
-    setCurrentObject: handleObjectSelect,
-    currentObject,
-  };
+  }, [update, app, shapes, currentObject, setCurrentObject]);
+  return { canvasShapes };
 };
