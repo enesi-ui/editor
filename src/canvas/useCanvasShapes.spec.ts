@@ -17,18 +17,24 @@ vi.mock("~/shape/Rectangle", () => {
   return { Rectangle: RectangleMock };
 });
 
-describe.only("useCanvasShapes", () => {
+describe("useCanvasShapes", () => {
   it("constructs without crashing", async () => {
     const { result, server } = setupHook(() => useCanvasShapes());
+
     expect(result).not.toBe(null);
-    server.close();
+
+    act(() => server.close());
   });
 
   it("initially returns no canvas shapes if no shapes are returned from endpoint", async () => {
     const { result, server } = setupHook(() => useCanvasShapes());
     await act(async () => await server.connected);
-    expect(result.current.canvasShapes.current).toEqual([]);
-    server.close();
+
+    await waitFor(() =>
+      expect(result.current.canvasShapes.current).toEqual([]),
+    );
+
+    act(() => server.close());
   });
 
   it("initially creates canvas shapes from the shapes returned from endpoint", async () => {

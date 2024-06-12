@@ -1,5 +1,6 @@
 import { describe, test, expect, vi } from "vitest";
-import { setup, screen } from "~/tests/setup";
+import { setup } from "~/tests/setup";
+import { screen } from "@testing-library/react";
 import { CheckboxProperty } from "~/properties-panel/CheckboxProperty.tsx";
 
 describe("CheckboxProperty", () => {

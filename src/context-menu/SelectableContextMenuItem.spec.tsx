@@ -1,6 +1,7 @@
 import { test, expect, vi, describe } from "vitest";
 import { SelectableContextMenuItem } from "~/context-menu/SelectableContextMenuItem.tsx";
-import { setup, screen } from "~/tests/setup";
+import { setup } from "~/tests/setup";
+import { screen } from "@testing-library/react";
 
 describe("SelectableContextMenuItem", () => {
   test("loads and displays greeting", async () => {

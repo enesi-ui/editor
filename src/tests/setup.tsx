@@ -2,7 +2,6 @@ import {
   renderHook,
   render,
   RenderOptions,
-  screen,
   fireEvent,
 } from "@testing-library/react";
 import { ReactElement, ReactNode } from "react";
@@ -59,4 +58,4 @@ const setup = (ui: ReactElement, options?: Omit<RenderOptions, "queries">) => {
   return { user: userEvent.setup(), ...render(ui, options) };
 };
 
-export { screen, setup, fireEvent, setupHook };
+export { setup, fireEvent, setupHook };

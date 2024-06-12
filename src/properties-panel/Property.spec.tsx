@@ -1,6 +1,7 @@
 import { describe, test, expect, vi } from "vitest";
-import { setup, screen } from "~/tests/setup";
+import { setup } from "~/tests/setup";
 import { Property } from "~/properties-panel/Property.tsx";
+import { screen } from "@testing-library/react";
 
 describe("Property", () => {
   test("renders", () => {
