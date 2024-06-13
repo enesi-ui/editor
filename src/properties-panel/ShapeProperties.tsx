@@ -91,7 +91,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
       <Property
         topBorder
         hoverEffect
-        label="x"
+        label="X"
         value={properties.x}
         id="x"
         type="number"
@@ -103,14 +103,14 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         hoverEffect
         label="y"
         value={properties.y}
-        id="y"
+        id="Y"
         type="number"
         onChange={(value) => handlePropertyChange("y", value)}
         onFinish={() => handlePropertyFinish()}
       />
       <Property
         hoverEffect
-        label="w"
+        label="W"
         id="width"
         type="number"
         value={properties.width}
@@ -119,7 +119,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
       />
       <Property
         hoverEffect
-        label="h"
+        label="H"
         value={properties.height}
         id="height"
         type="number"

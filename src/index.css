@@ -15,7 +15,7 @@
 
 .input {
   @apply focus:outline-none;
-  @apply focus-within:outline-2 focus-within:outline-accent focus-within:outline-offset-0;
+  @apply focus-within:outline-1 focus-within:outline-accent focus-within:outline-offset-0;
 }
 
 .divider {

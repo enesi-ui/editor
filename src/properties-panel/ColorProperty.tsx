@@ -36,8 +36,9 @@ export const ColorProperty = (props: ColorPropertyProps) => {
           e.preventDefault();
           return onChange?.(e.target.value);
         }}
+        className="w-11"
       />
-      {!hideValue && <span className={"w-full"}>{value}</span>}
+      {!hideValue && <span className="w-full flex-[2_1_auto]">{value}</span>}
       {alpha !== undefined && (
         <input
           step={0.01}
@@ -49,7 +50,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
             return onChangeAlpha?.(parseFloat(e.target.value));
           }}
           className={
-            "pl-1 w-full group-hover:border-l group-hover:border-base-content/20"
+            "pl-1 w-full flex-[1_2_auto] group-hover:border-l group-hover:border-base-content/20"
           }
         />
       )}
