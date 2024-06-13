@@ -10,6 +10,7 @@ import { roundNumber } from "~/utility/round.ts";
 import { CanvasObject } from "~/canvas/CanvasObject.ts";
 import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
 import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
+import { isValidHexCode } from "~/utility/validhex.ts";
 
 export class Rectangle implements CanvasShape {
   private readonly graphics: Graphics;
@@ -283,13 +284,7 @@ export class Rectangle implements CanvasShape {
   ): void {
     const roundedWidth = round ? roundNumber(width) : width;
     const roundedHeight = round ? roundNumber(height) : height;
-    this.graphics.clear();
-    this.fills.forEach((fillProperty) => {
-      this.graphics
-        .beginFill(fillProperty.color, fillProperty.alpha)
-        .drawRect(0, 0, roundedWidth, roundedHeight)
-        .endFill();
-    });
+    this.setGraphics(this.fills, roundedWidth, roundedHeight);
     this.updateGuides();
     if (emit && this.id)
       this.options?.onUpdate?.({
@@ -310,13 +305,7 @@ export class Rectangle implements CanvasShape {
     this.container.y = round ? roundNumber(y) : y;
     const roundedWidth = round ? roundNumber(width) : width;
     const roundedHeight = round ? roundNumber(height) : height;
-    this.graphics.clear();
-    this.fills.forEach((fillProperty) => {
-      this.graphics
-        .beginFill(fillProperty.color, fillProperty.alpha)
-        .drawRect(0, 0, roundedWidth, roundedHeight)
-        .endFill();
-    });
+    this.setGraphics(this.fills, roundedWidth, roundedHeight);
     this.updateGuides();
     if (emit && this.id)
       this.options?.onUpdate?.({
@@ -328,14 +317,7 @@ export class Rectangle implements CanvasShape {
   setFill(fills: FillPropertyData[], emit: boolean = false) {
     this.fills = fills;
     const { width, height } = this.graphics;
-    this.graphics.clear();
-    fills.forEach((fillProperty) => {
-      this.graphics
-        .beginFill(fillProperty.color, fillProperty.alpha)
-        .drawRect(0, 0, width, height)
-        .endFill();
-    });
-
+    this.setGraphics(fills, width, height);
     if (emit && this.id)
       this.options?.onUpdate?.({
         ...this.serialize(),
@@ -343,16 +325,30 @@ export class Rectangle implements CanvasShape {
       });
   }
 
+  setGraphics(fills: FillPropertyData[], width: number, height: number) {
+    this.graphics.clear();
+    fills.forEach((fillProperty) => {
+      const { color, alpha } = fillProperty;
+      const validColor = isValidHexCode(color) ? color : this.initFill;
+      this.graphics
+        .beginFill(validColor, alpha)
+        .drawRect(0, 0, width, height)
+        .endFill();
+    });
+  }
+
   setStrokes(strokes: StrokePropertyData[], emit: boolean = false) {
     this.currentStrokes.map((currentStroke) =>
       this.container.removeChild(currentStroke),
     );
     strokes.forEach((strokeProperty) => {
+      const { color, alpha } = strokeProperty;
+      const validColor = isValidHexCode(color) ? color : this.initFill;
       const startCoordinate = strokeProperty.width / 2;
       const stroke = new Graphics()
         .lineStyle({
-          color: strokeProperty.color,
-          alpha: strokeProperty.alpha,
+          color: validColor,
+          alpha,
           width: strokeProperty.width,
         })
         .drawRect(
@@ -463,14 +459,7 @@ export class Rectangle implements CanvasShape {
   }
 
   init(data: Omit<Shape, "id" | "container">) {
-    this.fills = data.fills;
-    this.graphics.clear();
-    this.fills.forEach((fillProperty) => {
-      this.graphics
-        .beginFill(fillProperty.color, fillProperty.alpha)
-        .drawRect(0, 0, data.graphics.width, data.graphics.height)
-        .endFill();
-    });
+    this.setFill(data.fills);
     this.setStrokes(data.strokes);
     this.updateGuides();
   }

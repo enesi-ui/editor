@@ -7,7 +7,6 @@ interface ColorPropertyProps {
   onChangeAlpha?: (value: number) => void;
   showLabel?: boolean;
   className?: string;
-  hideValue?: boolean;
 }
 export const ColorProperty = (props: ColorPropertyProps) => {
   const {
@@ -17,7 +16,6 @@ export const ColorProperty = (props: ColorPropertyProps) => {
     id,
     onChange,
     onChangeAlpha,
-    hideValue,
     className,
     showLabel,
   } = props;
@@ -30,7 +28,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
       <input
         id={id}
         type={"color"}
-        defaultValue={value}
+        value={value}
         aria-label={showLabel ? label : undefined}
         onChange={(e) => {
           e.preventDefault();
@@ -38,7 +36,16 @@ export const ColorProperty = (props: ColorPropertyProps) => {
         }}
         className="w-11"
       />
-      {!hideValue && <span className="w-full flex-[2_1_auto]">{value}</span>}
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => {
+          e.preventDefault();
+          return onChange?.(e.target.value[0] !== "#" ? `#${e.target.value}` : e.target.value);
+        }}
+        className="w-full flex-[2_1_auto]"
+      />
+
       {alpha !== undefined && (
         <input
           step={0.01}
