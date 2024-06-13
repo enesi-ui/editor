@@ -32,7 +32,7 @@ export const WebSocketContextProvider = ({
 
   // todo put it inside a hook
   useEffect(() => {
-    const current = new WebSocket(import.meta.env.VITE_APP_WS_URL as string);
+    const current = new WebSocket(import.meta.env.VITE_APP_WS_URL as string || "ws://localhost:8082");
     current.addEventListener("open", () => {
       setReady(true);
     });
