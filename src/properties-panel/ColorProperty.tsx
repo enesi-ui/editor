@@ -79,7 +79,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
                 return onChangeAlpha?.(parseFloat(e.target.value));
               }}
               className={
-                "pl-1 group-hover:border-l group-hover:border-base-content/20 min-w-0 w-full"
+                "pl-1 border-transparent border-l group-hover:border-base-content/20 min-w-0 w-full"
               }
             />
           )}
