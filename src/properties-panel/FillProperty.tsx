@@ -3,6 +3,7 @@ import { useState } from "react";
 import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 import { CanvasShape } from "~/shape/CanvasShape.ts";
 import { SectionButton } from "~/core/SectionButton.tsx";
+import { PlusIcon } from "~/icon/PlusIcon.tsx";
 
 interface FillPropertyProps {
   shape: CanvasShape;
@@ -51,13 +52,33 @@ export const FillProperty = (props: FillPropertyProps) => {
     });
   };
 
+  const handleRemoveFill = (index: number) => {
+    setFillProperty((prev) => {
+      const newFills = prev.filter((_, i) => i !== index);
+      shape.setFill(newFills, true);
+      return newFills;
+    });
+  };
+
+  const handleVisibilityToggle = (index: number) => {
+    setFillProperty((prev) => {
+      const oldFill = prev[index];
+      prev[index] = {
+        ...oldFill,
+        hidden: !oldFill.hidden
+      };
+      shape.setFill(prev, true);
+      return prev;
+    });
+  }
+
   return (
     <>
       <SectionButton
         onClick={handleAddFill}
         ariaLabel={"Add fill"}
         label={"Fill"}
-        icon={"+"}
+        icon={<PlusIcon />}
         className={className}
       />
       {fillProperty.map((fill, index) => (
@@ -70,6 +91,9 @@ export const FillProperty = (props: FillPropertyProps) => {
           onChange={(value) => handleFillChange(index, value)}
           onChangeAlpha={(value) => handleFillAlphaChange(index, value)}
           className={className}
+          onRemove={() => handleRemoveFill(index)}
+          onToggleVisibility={() => handleVisibilityToggle(index)}
+          hidden={fill.hidden}
         />
       ))}
     </>

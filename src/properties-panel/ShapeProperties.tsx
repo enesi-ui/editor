@@ -101,9 +101,9 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
       <Property
         topBorder
         hoverEffect
-        label="y"
+        label="Y"
         value={properties.y}
-        id="Y"
+        id="y"
         type="number"
         onChange={(value) => handlePropertyChange("y", value)}
         onFinish={() => handlePropertyFinish()}

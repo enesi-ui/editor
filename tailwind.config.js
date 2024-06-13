@@ -1,10 +1,11 @@
 /** @type {import('tailwindcss').Config} */
-import daisyui from "daisyui"
+import daisyui from "daisyui";
+import typo from "@tailwindcss/typography";
 
 export default {
   content: ["./src/**/*.tsx"],
-  plugins: [daisyui],
+  plugins: [typo, daisyui],
   daisyui: {
-    themes: ['dim']
-  }
+    themes: ["dim"],
+  },
 };

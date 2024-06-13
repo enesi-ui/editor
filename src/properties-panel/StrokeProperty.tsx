@@ -3,6 +3,7 @@ import { useState } from "react";
 import { StrokePropertyData } from "~/properties-panel/StrokePropertyData.ts";
 import { CanvasShape } from "~/shape/CanvasShape.ts";
 import { SectionButton } from "~/core/SectionButton.tsx";
+import { PlusIcon } from "~/icon/PlusIcon.tsx";
 
 interface StrokePropertyProps {
   shape: CanvasShape;
@@ -58,7 +59,7 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
         onClick={handleAddStroke}
         ariaLabel={"Add stroke"}
         label={"Stroke"}
-        icon={"+"}
+        icon={<PlusIcon />}
         className={className}
       />
       {strokeProperty.map((stroke, index) => (
