@@ -34,14 +34,15 @@ export const ColorProperty = (props: ColorPropertyProps) => {
     hidden,
   } = props;
 
-  const { open, hide, triggerElement, set } = useContextMenu();
+  const { open, hide, triggerElement, toggle } = useContextMenu();
   const [colorPicker, setColorPicker] = useState<iro.ColorPicker>();
+  const initialValue = addAlpha(value, alpha ?? 0);
 
   const ref = useCallback((colorPickerRef: HTMLElement | null) => {
     if (!colorPickerRef) return;
     setColorPicker(
       iro.ColorPicker(colorPickerRef, {
-        color: addAlpha(value, alpha ?? 0),
+        color: initialValue,
         layout: [
           {
             component: iro.ui.Wheel,
@@ -68,7 +69,6 @@ export const ColorProperty = (props: ColorPropertyProps) => {
       onChangeAlpha?.(color.alpha);
       onChange?.(color.hexString);
     };
-    colorPicker?.on("input:change", handleChange);
 
     return () => {
       colorPicker?.off("input:change", handleChange);
@@ -97,7 +97,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
           style={{ backgroundColor: `${value}` }}
           className="flex-[0_0_24px] h-[24px]"
           onPointerDown={(event) => {
-            set({
+            toggle({
               x: event.pageX,
               y: event.pageY,
               triggerElement: event.currentTarget,

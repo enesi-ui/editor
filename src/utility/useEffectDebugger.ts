@@ -8,7 +8,7 @@ const usePrevious = (value: unknown[], initialValue: unknown[]) => {
   return ref.current;
 };
 
-const useEffectDebugger = (effectHook: (...unknown: []) => void, dependencies: (object | null)[], dependencyNames = []) => {
+const useEffectDebugger = (effectHook: (...unknown: []) => void, dependencies: (object | null | undefined)[], dependencyNames = []) => {
   const previousDeps = usePrevious(dependencies, []);
 
   const changedDeps = dependencies.reduce((accum, dependency, index) => {

@@ -3,11 +3,7 @@ import { ShapeKeyboardControl } from "~/shape/ShapeKeyboardControl.tsx";
 import { useContext } from "react";
 import { CanvasObjectContext } from "~/canvas/CanvasObjectContext.ts";
 
-export interface KeyboardControlProps {
-  inCanvas: boolean;
-}
-export const KeyboardControl = (props: KeyboardControlProps) => {
-  const { inCanvas } = props;
+export const KeyboardControl = () => {
   const { currentObject } = useContext(CanvasObjectContext);
 
   const { isCanvasShape } = useCanvasObjectType();
@@ -17,7 +13,7 @@ export const KeyboardControl = (props: KeyboardControlProps) => {
   return (
     <>
       {isCanvasShape(currentObject) && id && (
-        <ShapeKeyboardControl inCanvas={inCanvas} canvasShapeId={id} />
+        <ShapeKeyboardControl canvasShapeId={id} />
       )}
     </>
   );

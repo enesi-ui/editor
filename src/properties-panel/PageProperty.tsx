@@ -12,7 +12,7 @@ export const PageProperty = () => {
       id={"page-bg-color"}
       label="Page"
       value={app.renderer.background.color as string}
-      onChange={(value) => handleBgColorChange(value)}
+      onChange={handleBgColorChange}
       showLabel
       className={"mt-2 h-12"}
     />

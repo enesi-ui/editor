@@ -43,7 +43,7 @@ export const ShapeFactory = () => {
 
   const { post } = useShapesPost();
 
-  const { hide, open, set, triggerElement } = useContextMenu();
+  const { hide, open, toggle, triggerElement } = useContextMenu();
 
   const create = (factory: Factory, createdEvent: FederatedPointerEvent) => {
     if (tool.current !== Tools.CREATE_SHAPE) return;
@@ -98,7 +98,7 @@ export const ShapeFactory = () => {
       <span
         className={`w-4 flex pt-0 hover:pt-2 cursor-context-menu join-item justify-center`}
         onPointerDown={(event) => {
-          set({
+          toggle({
             x: event.pageX,
             y: event.pageY,
             triggerElement: event.currentTarget,

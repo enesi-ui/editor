@@ -4,7 +4,7 @@ import { toolInToolbar } from "~/core/commonClasses.ts";
 import { Tools } from "~/tool/Tools.ts";
 
 export const useToolsContext = () => {
-  const { tool: currentTool, setTool } = useContext(ToolContext) as ToolContextType;
+  const { tool: currentTool, setTool, position } = useContext(ToolContext) as ToolContextType;
 
   const toolref = useRef(currentTool);
 
@@ -12,6 +12,7 @@ export const useToolsContext = () => {
 
   return {
     tool: toolref,
+    position,
     setTool,
     classes : (tool: Tools) => {
       return toolInToolbar(toolref.current === tool);
