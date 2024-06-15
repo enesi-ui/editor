@@ -459,7 +459,8 @@ export class Rectangle implements CanvasShape {
   }
 
   init(data: Omit<Shape, "id" | "container">) {
-    this.setFill(data.fills);
+    this.fills = data.fills;
+    this.setGraphics(this.fills, data.graphics.width, data.graphics.height);
     this.setStrokes(data.strokes);
     this.updateGuides();
   }

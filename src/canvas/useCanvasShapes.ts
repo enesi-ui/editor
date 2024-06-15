@@ -28,7 +28,6 @@ export const useCanvasShapes = () => {
       } else if (existing) {
         return;
       }
-
       // if shape does not exist, create it (coming from server)
       if (shape.type === "RECTANGLE") {
         canvasShapes.current.push(
