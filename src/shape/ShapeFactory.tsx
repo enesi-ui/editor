@@ -83,7 +83,7 @@ export const ShapeFactory = () => {
   }`;
 
   return (
-    <div className={`join ${activeClass}`}>
+    <div className={`join ${activeClass} mx-2`}>
       <button
         className={`btn btn-square join-item ${buttonClass}`}
         onClick={() => {

@@ -10,7 +10,7 @@ import { roundNumber } from "~/utility/round.ts";
 import { CanvasObject } from "~/canvas/CanvasObject.ts";
 import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
 import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
-import { isValidHexCode } from "~/utility/validhex.ts";
+import { isValidHexCode } from "~/utility/hex.ts";
 
 export class Rectangle implements CanvasShape {
   private readonly graphics: Graphics;

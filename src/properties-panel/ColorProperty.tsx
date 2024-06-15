@@ -1,5 +1,10 @@
 import { MinusIcon } from "~/icon/MinusIcon.tsx";
 import { HiddenIcon, VisibleIcon } from "~/icon/HideIcon.tsx";
+import iro from "@jaames/iro";
+import { useCallback, useEffect, useState } from "react";
+import { ContextMenu } from "~/context-menu/ContextMenu.tsx";
+import { useContextMenu } from "~/context-menu/useContextMenu.ts";
+import { addAlpha } from "~/utility/hex.ts";
 
 interface ColorPropertyProps {
   label: string;
@@ -29,26 +34,75 @@ export const ColorProperty = (props: ColorPropertyProps) => {
     hidden,
   } = props;
 
+  const { open, hide, triggerElement, set } = useContextMenu();
+  const [colorPicker, setColorPicker] = useState<iro.ColorPicker>();
+
+  const ref = useCallback((colorPickerRef: HTMLElement | null) => {
+    if (!colorPickerRef) return;
+    setColorPicker(
+      iro.ColorPicker(colorPickerRef, {
+        color: addAlpha(value, alpha ?? 0),
+        layout: [
+          {
+            component: iro.ui.Wheel,
+            options: {
+              wheelLightness: false
+            },
+          },
+          {
+            component: iro.ui.Slider,
+            options: {
+              sliderType: "alpha",
+            },
+          },
+        ],
+      }),
+    );
+  }, []);
+
+  useEffect(() => {
+    const handleChange = function (color: {
+      hexString: string;
+      alpha: number;
+    }) {
+      onChangeAlpha?.(color.alpha);
+      onChange?.(color.hexString);
+    };
+    colorPicker?.on("input:change", handleChange);
+
+    return () => {
+      colorPicker?.off("input:change", handleChange);
+    };
+  }, [colorPicker, onChange, onChangeAlpha]);
+
   return (
     <div
       className={`flex items-center justify-between w-full pr-3 ${className}`}
     >
+      <ContextMenu
+        open={open}
+        onOutsideClick={hide}
+        triggerElement={triggerElement}
+        xOffset={-250}
+      >
+        <div className="p-2" ref={ref} />
+      </ContextMenu>
       <div
         className={
           "input input-ghost input-sm flex items-center gap-2 group min-w-0 pr-0"
         }
       >
         {showLabel && <label htmlFor={id}>{label}</label>}
-        <input
-          id={id}
-          type={"color"}
-          value={value}
-          aria-label={showLabel ? label : undefined}
-          onChange={(e) => {
-            e.preventDefault();
-            return onChange?.(e.target.value);
+        <div
+          style={{ backgroundColor: `${value}` }}
+          className="flex-[0_0_24px] h-[24px]"
+          onPointerDown={(event) => {
+            set({
+              x: event.pageX,
+              y: event.pageY,
+              triggerElement: event.currentTarget,
+            });
           }}
-          className="flex-[0_0_24px]"
         />
         <input
           autoComplete={"false"}
@@ -73,7 +127,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
               step={0.01}
               id={`${id}-alpha`}
               type="number"
-              defaultValue={alpha}
+              value={alpha}
               onChange={(e) => {
                 e.preventDefault();
                 return onChangeAlpha?.(parseFloat(e.target.value));

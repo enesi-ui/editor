@@ -16,10 +16,9 @@ export const SelectableContextMenuItem = ({
   return (
     <div
       onClick={onClick}
-      className="flex cursor-pointer hover:bg-accent text-sm"
+      className="flex cursor-pointer hover:bg-accent text-sm px-5"
     >
       <div className="flex justify-start flex-row">
-        <span className="p-1 flex items-center w-[17px]" />
         {icon && <span className="p-1 flex items-center">{icon}</span>}
         <span className="p-1">{label}</span>
         {shortcut && <span className="p-1">{shortcut}</span>}

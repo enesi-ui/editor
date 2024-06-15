@@ -62,7 +62,7 @@ export const ContextMenu = ({
   return (
     <div
       ref={ref}
-      className="fixed right-0 z-10 mt-2 w-56 origin-top-left bg-base-100 focus:outline-none shadow-xl border border-base-content/20 py-2"
+      className="fixed right-0 z-10 mt-2 w-fit origin-top-left bg-base-100 focus:outline-none shadow shadow-black/50 border border-base-content/20 py-2"
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="menu-button"

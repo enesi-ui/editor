@@ -34,7 +34,6 @@ function Editor() {
   return (
     <div
       data-testid="editor-canvas"
-      className="flex-row items-center justify-center"
     >
       <Toolbar>
         <ShapeFactory />
