@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
-import { ToolContextProvider } from "~/tool/ToolContextProvider.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
