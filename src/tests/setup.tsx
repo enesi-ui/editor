@@ -6,34 +6,9 @@ import {
 } from "@testing-library/react";
 import { ReactElement, ReactNode } from "react";
 import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WebSocketContextProvider } from "~/web-sockets/WebSocketContextProvider.tsx";
 import WS from "vitest-websocket-mock";
-
-class Application {
-  constructor(public renderer: Record<string, unknown>) {}
-  public view: HTMLElement = document.createElement("canvas");
-  public stage = {
-    eventMode: "static",
-    hitArea: "",
-    addChild: vi.fn(),
-    removeChild: vi.fn(),
-  };
-}
-
-vi.mock("pixi.js", () => {
-  return {
-    Application,
-    settings: {
-      ROUND_PIXELS: true,
-    },
-    Container: class Container {
-      public addChild = vi.fn();
-      public removeChild = vi.fn();
-    },
-  };
-});
 
 const queryClient = new QueryClient();
 const WithProviders = ({ children }: { children: ReactNode }): ReactElement => {

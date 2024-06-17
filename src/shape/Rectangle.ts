@@ -12,6 +12,7 @@ import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
 import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 import { isValidHexCode } from "~/utility/hex.ts";
 
+// todo unit test
 export class Rectangle implements CanvasShape {
   private readonly graphics: Graphics;
   private readonly selectGraphics: Graphics;
