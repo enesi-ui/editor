@@ -6,7 +6,6 @@ import { useShapes } from "~/shape/useShapes.ts";
 import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
 import { CanvasObjectContext } from "~/canvas/CanvasObjectContext.ts";
 
-// todo unit test
 export const useCanvasShapes = () => {
   const canvasShapes = useRef<CanvasShape[]>([]);
   const { update } = useShapeUpdate();
