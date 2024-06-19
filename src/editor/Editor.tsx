@@ -1,5 +1,5 @@
 import { usePixi } from "~/pixi/pixiContext.ts";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ShapeFactory } from "~/shape/ShapeFactory.tsx";
 import { PropertiesPanel } from "~/properties-panel/PropertiesPanel.tsx";
 import { Toolbar } from "~/toolbar/Toolbar.tsx";
@@ -9,6 +9,7 @@ import { KeyboardControl } from "~/keyboard-control/KeyboardControl.tsx";
 import { useCanvasShapes } from "~/canvas/useCanvasShapes.ts";
 import { useToolsContext } from "~/tool/useToolsContext.ts";
 import { MousePosition } from "~/tool/Tools.ts";
+import { CanvasObjectContext } from "~/canvas/CanvasObjectContext.ts";
 
 function Editor() {
   const app = usePixi();
@@ -19,6 +20,7 @@ function Editor() {
   const [canvasWidth, setCanvasWidth] = useState(
     width - propertiesPanelWidth - leftPanelWidth,
   );
+  const { setCurrentObject } = useContext(CanvasObjectContext);
 
   const { position } = useToolsContext();
 
@@ -29,7 +31,10 @@ function Editor() {
     app.stage.hitArea = app.screen;
     setCanvasWidth(width - propertiesPanelWidth - leftPanelWidth);
     app.resizeTo = pixiRef.current;
-  }, [app, pixiRef, width]);
+    app.stage.on("pointerdown", () => {
+      setCurrentObject(null);
+    });
+  }, [app, pixiRef, width, setCurrentObject]);
 
   useCanvasShapes();
 
