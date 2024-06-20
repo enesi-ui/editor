@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Rectangle > creates style 1`] = `
+"
+      .test {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 0px;
+        height: 0px;
+        background-color: #ffffff;
+        opacity: 1;
+      }
+    "
+`;
