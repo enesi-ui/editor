@@ -123,7 +123,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
       />
       <Property
         hoverEffect
-        label="H"
+        label="R"
         value={properties.radius}
         id="radius"
         type="number"

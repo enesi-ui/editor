@@ -129,10 +129,11 @@ export class Ellipse implements CanvasShape {
       });
   }
 
-  getSize(): { width: number; height: number } {
+  getSize(): { width: number; height: number, radius: number} {
     return {
       width: this.graphics.width,
       height: this.graphics.height,
+      radius: this.graphics.width / 2,
     };
   }
 
