@@ -83,8 +83,8 @@ export class CanvasDataResource implements CanvasObject {
     };
   }
 
-  getSize(): { width: number; height: number } {
-    return { height: 0, width: 0 };
+  getSize(): { width: number; height: number, radius: number} {
+    return { height: 0, width: 0, radius: 0};
   }
 
   showHighlight(): void {

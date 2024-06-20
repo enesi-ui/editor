@@ -22,6 +22,7 @@ export class Rectangle implements CanvasShape {
   private fills: FillPropertyData[] = [];
   private currentStrokes: Graphics[] = [];
   private readonly handles: Graphics[] = [];
+  private radiusHandle: Graphics;
   private selected = false;
   private initFill = "#ffffff";
   private initFillAlpha = 1;
@@ -31,7 +32,10 @@ export class Rectangle implements CanvasShape {
   private handleFill = "#ffffff";
   private handlesWidth = 1;
   private handleSize = 8;
+  private radiusHandleSize = 4;
+  private radiusHandlePosition = 12;
   private highlighted = false;
+  private radius = 0;
   public readonly id: string | undefined;
   constructor(
     origin: { x: number; y: number },
@@ -76,6 +80,20 @@ export class Rectangle implements CanvasShape {
       .endFill();
     this.selectGraphics.zIndex = 2;
 
+    this.createHandles();
+
+    this.radiusHandle = new Graphics()
+    this.createRadiusHandles();
+
+    if (options?.data) {
+      this.init(options.data);
+      this.id = options.data.id;
+    }
+
+    new CanvasObjectSelectMove(app, this);
+  }
+
+  private createHandles() {
     for (let i = 0; i < 4; i++)
       this.handles.push(
         new Graphics()
@@ -93,9 +111,9 @@ export class Rectangle implements CanvasShape {
     this.handles[0].eventMode = "static";
     this.handles[0].on("pointerdown", (event) => {
       event.stopPropagation();
-      app.stage.on("pointermove", this.resizeHandle0);
+      this.app.stage.on("pointermove", this.resizeHandle0);
       this.handles[0].once("pointerup", () => {
-        app.stage.off("pointermove", this.resizeHandle0);
+        this.app.stage.off("pointermove", this.resizeHandle0);
       });
     });
 
@@ -103,9 +121,9 @@ export class Rectangle implements CanvasShape {
     this.handles[1].eventMode = "static";
     this.handles[1].on("pointerdown", (event) => {
       event.stopPropagation();
-      app.stage.on("pointermove", this.resizeHandle1);
+      this.app.stage.on("pointermove", this.resizeHandle1);
       this.handles[1].once("pointerup", () => {
-        app.stage.off("pointermove", this.resizeHandle1);
+        this.app.stage.off("pointermove", this.resizeHandle1);
       });
     });
 
@@ -113,9 +131,9 @@ export class Rectangle implements CanvasShape {
     this.handles[2].eventMode = "static";
     this.handles[2].on("pointerdown", (event) => {
       event.stopPropagation();
-      app.stage.on("pointermove", this.resizeHandle2);
+      this.app.stage.on("pointermove", this.resizeHandle2);
       this.handles[2].once("pointerup", () => {
-        app.stage.off("pointermove", this.resizeHandle2);
+        this.app.stage.off("pointermove", this.resizeHandle2);
       });
     });
 
@@ -123,18 +141,42 @@ export class Rectangle implements CanvasShape {
     this.handles[3].eventMode = "static";
     this.handles[3].on("pointerdown", (event) => {
       event.stopPropagation();
-      app.stage.on("pointermove", this.resizeHandle3);
+      this.app.stage.on("pointermove", this.resizeHandle3);
       this.handles[3].once("pointerup", () => {
-        app.stage.off("pointermove", this.resizeHandle3);
+        this.app.stage.off("pointermove", this.resizeHandle3);
       });
     });
+  }
 
-    if (options?.data) {
-      this.init(options.data);
-      this.id = options.data.id;
-    }
+  private createRadiusHandles() {
+    this.radiusHandle = new Graphics()
+      .clear()
+      .lineStyle(this.handlesWidth, this.handlesColor)
+      .drawCircle(0, 0, 0.1)
+      .endFill();
+    this.radiusHandle.zIndex = 4;
 
-    new CanvasObjectSelectMove(app, this);
+    this.radiusHandle.cursor = "crosshair";
+    this.radiusHandle.eventMode = "static";
+    this.radiusHandle.on("pointerdown", (downEvent) => {
+      downEvent.stopPropagation();
+      const { x: xDown, y: yDown } = downEvent.global;
+      const initialRadius = this.radius;
+      const resize = (event: FederatedPointerEvent) =>
+        this.resizeRadiusHandle({ xDown, yDown, initialRadius }, event);
+      this.app.stage.on("pointermove", resize);
+      this.radiusHandle.once("pointerupoutside", () => {
+        this.app.stage.off("pointermove", resize);
+      });
+    });
+  }
+
+  private init(data: Omit<Shape, "id" | "container">) {
+    this.fills = data.fills;
+    this.radius = data.radius;
+    this.setGraphics(this.fills, data.graphics.width, data.graphics.height);
+    this.setStrokes(data.strokes);
+    this.updateGuides();
   }
 
   getFill(): FillPropertyData[] {
@@ -184,12 +226,11 @@ export class Rectangle implements CanvasShape {
   };
 
   resizeHandle0 = (event: FederatedPointerEvent) => {
-    const { width, height } = this.graphics;
-
     const pointerX = event.global.x;
     const pointerY = event.global.y;
 
     const { x, y } = this.getOrigin();
+    const { width, height } = this.getSize();
     this.setSizeOrigin(
       pointerX,
       pointerY,
@@ -198,6 +239,40 @@ export class Rectangle implements CanvasShape {
       true,
     );
     this.setStrokes(this.strokes);
+    if (this.id)
+      this.options?.onUpdate?.({
+        ...this.serialize(),
+        id: this.id,
+      });
+  };
+
+  resizeRadiusHandle = (
+    {
+      xDown,
+      yDown,
+      initialRadius,
+    }: { xDown: number; yDown: number; initialRadius: number },
+    event: FederatedPointerEvent,
+  ) => {
+    const { width, height } = this.getSize();
+
+    const { x, y } = event.global;
+    const maxRadius = Math.min(width, height) / 2;
+    const movement =
+      Math.sqrt((x - xDown) ** 2 + (y - yDown) ** 2) * Math.sign(x - xDown);
+    const newRadius =
+      (movement * maxRadius) / (maxRadius - this.radiusHandlePosition) +
+      initialRadius;
+    this.radius = Math.max(0, Math.min(maxRadius, newRadius));
+    this.graphics.clear();
+    this.fills.forEach((fillProperty) => {
+      const { color, alpha } = fillProperty;
+      this.graphics
+        .beginFill(color, alpha)
+        .drawRoundedRect(0, 0, width, height, this.radius)
+        .endFill();
+    });
+    this.updateGuides();
     if (this.id)
       this.options?.onUpdate?.({
         ...this.serialize(),
@@ -260,6 +335,20 @@ export class Rectangle implements CanvasShape {
         this.handleSize,
       )
       .endFill();
+
+    const maxRadius = Math.min(this.graphics.width, this.graphics.height) / 2;
+    this.radiusHandle
+      .clear()
+      .beginFill(this.handleFill)
+      .lineStyle(this.handlesWidth, this.handlesColor)
+      .drawCircle(
+        this.radiusHandlePosition * ((maxRadius - this.radius) / maxRadius) +
+          this.radius,
+        this.radiusHandlePosition * ((maxRadius - this.radius) / maxRadius) +
+        this.radius,
+        this.radiusHandleSize,
+      )
+      .endFill();
   }
 
   setOrigin(
@@ -319,6 +408,7 @@ export class Rectangle implements CanvasShape {
     this.fills = fills;
     const { width, height } = this.graphics;
     this.setGraphics(fills, width, height);
+
     if (emit && this.id)
       this.options?.onUpdate?.({
         ...this.serialize(),
@@ -333,7 +423,7 @@ export class Rectangle implements CanvasShape {
       const validColor = isValidHexCode(color) ? color : this.initFill;
       this.graphics
         .beginFill(validColor, alpha)
-        .drawRect(0, 0, width, height)
+        .drawRoundedRect(0, 0, width, height, this.radius)
         .endFill();
     });
   }
@@ -352,11 +442,12 @@ export class Rectangle implements CanvasShape {
           alpha,
           width: strokeProperty.width,
         })
-        .drawRect(
+        .drawRoundedRect(
           startCoordinate,
           startCoordinate,
           this.graphics.width - strokeProperty.width,
           this.graphics.height - strokeProperty.width,
+          this.radius,
         )
         .endFill();
       stroke.zIndex = 2;
@@ -384,10 +475,11 @@ export class Rectangle implements CanvasShape {
     return this.container.y;
   }
 
-  getSize(): { width: number; height: number } {
+  getSize(): { width: number; height: number, radius: number} {
     return {
       width: this.graphics.width,
       height: this.graphics.height,
+      radius: this.radius,
     };
   }
 
@@ -397,10 +489,12 @@ export class Rectangle implements CanvasShape {
       y: this.container.y,
     };
   }
+
   public deselect() {
     if (!this.selected) return;
     this.container.removeChild(this.selectGraphics);
     this.container.removeChild(...this.handles);
+    this.container.removeChild(this.radiusHandle);
     this.selected = false;
   }
 
@@ -408,6 +502,7 @@ export class Rectangle implements CanvasShape {
     if (this.selected) return;
     this.container.addChild(this.selectGraphics);
     this.container.addChild(...this.handles);
+    this.container.addChild(this.radiusHandle);
     this.options?.onSelect(this);
     this.selected = true;
   }
@@ -445,6 +540,7 @@ export class Rectangle implements CanvasShape {
         width: stroke.width,
       })),
       fills: this.fills,
+      radius: this.radius,
     };
   }
 
@@ -459,12 +555,6 @@ export class Rectangle implements CanvasShape {
     this.setStrokes(data.strokes);
   }
 
-  init(data: Omit<Shape, "id" | "container">) {
-    this.fills = data.fills;
-    this.setGraphics(this.fills, data.graphics.width, data.graphics.height);
-    this.setStrokes(data.strokes);
-    this.updateGuides();
-  }
   getImageData(): ImageData {
     const imageData = this.app.renderer.extract
       .canvas(this.graphics)
@@ -487,6 +577,7 @@ export class Rectangle implements CanvasShape {
   ): void {
     this.container.once(event, handler);
   }
+
 
   off(
     event: "pointerdown" | "pointerover" | "pointerout",

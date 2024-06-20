@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import useWindowDimensions from "~/utility/use-window-dimensions.ts";
+import { usePixi } from "~/pixi/pixiContext.ts";
 
 export type ContextMenuProps = {
   children: React.ReactNode;
@@ -11,7 +12,7 @@ export type ContextMenuProps = {
   yOffset?: number;
 };
 export const ContextMenu = ({
-                              open,
+  open,
   children,
   triggerElement,
   header,
@@ -21,6 +22,7 @@ export const ContextMenu = ({
 }: ContextMenuProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const { width, height } = useWindowDimensions();
+  const app = usePixi();
 
   const xOffSet = xOffset ?? 0;
   const yOffSet = yOffset ?? 0;
@@ -40,9 +42,20 @@ export const ContextMenu = ({
     } else {
       ref.current.style.top = `${origin.bottom + yOffSet}px`;
     }
-  }, [xOffSet, yOffSet, width, height, ref, triggerElement, open, xOffset, yOffset]);
+  }, [
+    xOffSet,
+    yOffSet,
+    width,
+    height,
+    ref,
+    triggerElement,
+    open,
+    xOffset,
+    yOffset,
+  ]);
 
   useEffect(() => {
+    const refCurrent = ref.current;
     function handleClickOutside(event: MouseEvent) {
       if (
         ref.current &&
@@ -52,11 +65,22 @@ export const ContextMenu = ({
         onOutsideClick?.();
       }
     }
+
+    function stopPropagation() {
+      app.stage.eventMode = 'none';
+    }
+    function startPropagation() {
+      app.stage.eventMode = 'static';
+    }
     document.addEventListener("pointerup", handleClickOutside);
+    ref.current?.addEventListener("pointerenter", stopPropagation);
+    ref.current?.addEventListener("pointerleave", startPropagation);
     return () => {
       document.removeEventListener("pointerup", handleClickOutside);
+      refCurrent?.removeEventListener("mouseover", stopPropagation);
+      refCurrent?.removeEventListener("mouseout", startPropagation);
     };
-  }, [ref, onOutsideClick, triggerElement]);
+  }, [app, ref, onOutsideClick, triggerElement]);
 
   if (!open) return null;
   return (

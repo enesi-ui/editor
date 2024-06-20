@@ -3,4 +3,5 @@ export type ShapePropertiesData = {
   height: string;
   x: string;
   y: string;
+  radius: string;
 }

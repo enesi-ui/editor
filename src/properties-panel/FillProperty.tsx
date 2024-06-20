@@ -10,6 +10,7 @@ interface FillPropertyProps {
   className?: string;
 }
 
+// todo no state needed use the shape from useshape
 export const FillProperty = (props: FillPropertyProps) => {
   const { shape, className } = props;
   const [fillProperty, setFillProperty] = useState<FillPropertyData[]>(
@@ -65,12 +66,12 @@ export const FillProperty = (props: FillPropertyProps) => {
       const oldFill = prev[index];
       prev[index] = {
         ...oldFill,
-        hidden: !oldFill.hidden
+        hidden: !oldFill.hidden,
       };
       shape.setFill(prev, true);
       return prev;
     });
-  }
+  };
 
   return (
     <>

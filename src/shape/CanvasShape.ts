@@ -19,6 +19,7 @@ export interface Shape {
     x: number;
     y: number;
   };
+  radius: number;
 }
 
 export interface CanvasShape extends CanvasObject {
