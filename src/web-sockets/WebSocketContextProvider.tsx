@@ -41,7 +41,9 @@ export const WebSocketContextProvider = ({
     });
     current.addEventListener("message", async (event) => {
       const data = JSON.parse(event.data.toString());
+
       if (!data.data) return;
+
       const { keys, method } = extractQueryKeys(data);
 
       if (method === "post") {

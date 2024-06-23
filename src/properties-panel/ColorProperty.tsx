@@ -56,7 +56,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
         options: {
           sliderType: "value",
         },
-      }
+      },
     ];
 
     if (hasAlpha.current) {
@@ -93,9 +93,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
   }, [colorPicker, onChange, onChangeAlpha]);
 
   return (
-    <div
-      className={`flex items-center justify-between w-full ${className}`}
-    >
+    <div className={`flex items-center justify-between w-full ${className}`}>
       <ContextMenu
         open={open}
         onOutsideClick={hide}
@@ -109,7 +107,11 @@ export const ColorProperty = (props: ColorPropertyProps) => {
           "input input-ghost input-sm flex items-center gap-2 group min-w-0 px-0"
         }
       >
-        {showLabel && <label className='pl-1' htmlFor={id}>{label}</label>}
+        {showLabel && (
+          <label className="pl-1" htmlFor={id}>
+            {label}
+          </label>
+        )}
         <div
           style={{ backgroundColor: `${value}` }}
           className="flex-[0_0_24px] h-[24px] ml-2"
@@ -139,21 +141,19 @@ export const ColorProperty = (props: ColorPropertyProps) => {
           className="flex-[0_1_48px] min-w-0 pl-1"
           aria-label={`fill ${id} Opacity`}
         >
-          {alpha !== undefined && (
-            <input
-              step={0.01}
-              id={`${id}-alpha`}
-              type="number"
-              value={alpha}
-              onChange={(e) => {
-                e.preventDefault();
-                return onChangeAlpha?.(parseFloat(e.target.value));
-              }}
-              className={
-                "pl-1 border-transparent border-l group-hover:border-base-content/20 min-w-0 w-full"
-              }
-            />
-          )}
+          <input
+            step={0.01}
+            id={`${id}-alpha`}
+            type="number"
+            value={alpha}
+            onChange={(e) => {
+              e.preventDefault();
+              return onChangeAlpha?.(parseFloat(e.target.value));
+            }}
+            className={
+              "pl-1 border-transparent border-l group-hover:border-base-content/20 min-w-0 w-full"
+            }
+          />
         </label>
       </div>
       {onToggleVisibility && (

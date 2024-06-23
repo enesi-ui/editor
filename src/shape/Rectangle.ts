@@ -48,7 +48,7 @@ export class Rectangle implements CanvasShape {
     readonly app: Application,
     private options?: {
       onSelect: (shapeId: string) => void;
-      onUpdate?: (shape: Shape) => Promise<unknown>;
+      onUpdate?: (shape: Shape) => unknown;
       data?: Shape;
     },
   ) {
@@ -123,9 +123,6 @@ export class Rectangle implements CanvasShape {
     }
 
     new CanvasObjectSelectMove(app, this);
-
-    if (options?.data?.canvasId === CANVASID)
-      this.select();
   }
 
   private createHandles() {
@@ -224,7 +221,7 @@ export class Rectangle implements CanvasShape {
     this.setSizeOrigin(x, pointerY, localX, height - pointerY + y, true);
     this.setStrokes(this.data.strokes);
     if (this.id)
-      await this.options?.onUpdate?.({
+      this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
       });
@@ -246,7 +243,7 @@ export class Rectangle implements CanvasShape {
     this.setSize(x, y, true);
     this.setStrokes(this.data.strokes);
     if (this.id)
-      await this.options?.onUpdate?.({
+      this.options?.onUpdate?.({
         ...this.serialize(),
         id: this.id,
       });

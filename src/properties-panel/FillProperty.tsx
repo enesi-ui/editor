@@ -15,36 +15,36 @@ export const FillProperty = (props: FillPropertyProps) => {
   const { shape } = useShape(shapeId);
   const { update } = useShapeUpdate();
 
-  const handleAddFill = async () => {
+  const handleAddFill = () => {
     const newFillProperty: FillPropertyData = {
       color: "#ffffff",
       alpha: 1,
     };
-    await update({
+    update({
       id: shapeId,
       fills: [...(shape?.fills ?? []), newFillProperty],
     });
   };
 
-  const handleFillChange = async (index: number, value: string) => {
+  const handleFillChange = (index: number, value: string) => {
     const fills = shape?.fills ?? [];
     fills[index] = {
       ...fills[index],
       color: value,
     };
-    await update({
+    update({
       id: shapeId,
       fills,
     });
   };
 
-  const handleFillAlphaChange = async (index: number, value: number) => {
+  const handleFillAlphaChange = (index: number, value: number) => {
     const fills = shape?.fills ?? [];
     fills[index] = {
       ...fills[index],
       alpha: value,
     };
-    await update({
+    update({
       id: shapeId,
       fills,
     });
@@ -52,7 +52,7 @@ export const FillProperty = (props: FillPropertyProps) => {
 
   const handleRemoveFill = async (index: number) => {
     const fills = shape?.fills.filter((_, i) => i !== index);
-    await update({
+    update({
       id: shapeId,
       fills,
     });

@@ -13,7 +13,7 @@ export const useShapeUpdate = () => {
   });
 
   return {
-    update: mutation.mutateAsync,
+    update: mutation.mutate,
     remove: removeMutation.mutateAsync,
   };
 };
