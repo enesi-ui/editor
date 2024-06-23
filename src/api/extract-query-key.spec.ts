@@ -32,6 +32,15 @@ describe("extract-query-key", () => {
     });
   });
 
+  test("post method has id in keys and :id", () => {
+    const event = "shapes/:id/post";
+    const result = extractQueryKeys({ event, data: { id: "123" } });
+    expect(result).toEqual({
+      method: "post",
+      keys: ["shapes", "123"],
+    });
+  });
+
   test("selection event", () => {
     const event = "selection/:canvasId/get";
     const result = extractQueryKeys({

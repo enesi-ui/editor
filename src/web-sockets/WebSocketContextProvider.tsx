@@ -6,6 +6,7 @@ import {
 } from "~/web-sockets/WebSocketContext.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { extractQueryKeys } from "~/api/extract-query-key.ts";
+import { CANVASID } from "~/canvas/useSelection.ts";
 
 function makeid(length: number) {
   let result = "";
@@ -47,7 +48,7 @@ export const WebSocketContextProvider = ({
       const { keys, method } = extractQueryKeys(data);
 
       if (method === "post") {
-        await queryClient.invalidateQueries({ queryKey: keys });
+        await queryClient.invalidateQueries({ queryKey: [keys[0]] });
         return;
       }
       queryClient.setQueryData(keys, data.data);
