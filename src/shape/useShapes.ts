@@ -11,18 +11,16 @@ export const useShapes = () => {
     queryFn: api.getAll,
   });
 
-  const query = useQueries({
+  const data = useQueries({
     queries:
       queryAll.data?.map((shape) => ({
         queryKey: [SHAPES_KEY, shape.id],
         queryFn: () => api.get(shape.id),
       })) ?? [],
+    combine: (results) => results.map((r) => r.data).filter(notEmpty),
   });
 
-  const shapes = query.map((q) => q.data).filter(notEmpty);
-
   return {
-    ...query,
-    shapes: shapes.length ? shapes : undefined,
+    shapes: data.length ? data : undefined,
   };
 };

@@ -15,7 +15,6 @@ export const PageProperty = () => {
       : app.renderer.background.color as string ?? '#0000';
     setPageBgColor(newColor);
     app.renderer.background.color = newColor;
-    console.log("color", color, app.renderer.background.color);
   };
 
   return (
@@ -25,7 +24,7 @@ export const PageProperty = () => {
       value={pageBgColor}
       onChange={handleBgColorChange}
       showLabel
-      className={"mt-2 mx-2 h-12"}
+      className={"mt-2 pl-3 h-12"}
     />
   );
 };

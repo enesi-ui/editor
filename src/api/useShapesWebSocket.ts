@@ -1,8 +1,10 @@
 import { Shape } from "~/shape/CanvasShape.ts";
 import { useWebsocket } from "~/web-sockets/useWebsocket.ts";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useShapesWebSocket = () => {
   const webSocket = useWebsocket();
+  const client = useQueryClient();
   return {
     delete: (id: string): Promise<void> => {
       webSocket.send({
@@ -17,7 +19,7 @@ export const useShapesWebSocket = () => {
         event: `shapes/:id/get`,
         data: id,
       });
-      return null;
+      return client.getQueryData<Shape>(["shapes", id]) ?? null;
     },
 
     getAll: (): Shape[] => {
@@ -35,12 +37,13 @@ export const useShapesWebSocket = () => {
       return Promise.resolve();
     },
 
-    put: (body: Shape): Promise<{ id: string }> => {
+    patch: (body: Partial<Shape> & { id: string }): Promise<Shape> => {
       webSocket.send({
-        event: "shapes/:id/put",
+        event: "shapes/:id/patch",
         data: body,
       });
-      return Promise.resolve({ id: body.id });
+      const shape = client.getQueryData<Shape>(["shapes", body.id]);
+      return Promise.resolve({ shape, ...body } as Shape);
     },
   };
 };

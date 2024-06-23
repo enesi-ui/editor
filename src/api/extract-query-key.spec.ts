@@ -31,4 +31,25 @@ describe("extract-query-key", () => {
       keys: ["shapes"],
     });
   });
+
+  test("selection event", () => {
+    const event = "selection/:canvasId/get";
+    const result = extractQueryKeys({
+      event,
+      data: { canvasId: "123", shapeIds: ["312"] },
+    });
+    expect(result).toEqual({
+      method: "get",
+      keys: ["selection", "123"],
+    });
+  });
+
+  test("patch method", () => {
+    const event = "shapes/:id/patch";
+    const result = extractQueryKeys({ event, data: { id: "123" } });
+    expect(result).toEqual({
+      method: "patch",
+      keys: ["shapes", "123"],
+    });
+  });
 });

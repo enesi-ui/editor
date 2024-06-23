@@ -75,7 +75,9 @@ export const ShapeFactory = () => {
   }`;
 
   const contextButtonClass = `${
-    tool.current === Tools.CREATE_SHAPE ? "text-neutral": "text-neutral-content"
+    tool.current === Tools.CREATE_SHAPE
+      ? "text-neutral"
+      : "text-neutral-content"
   }`;
 
   const buttonClass = `${
@@ -105,7 +107,9 @@ export const ShapeFactory = () => {
           });
         }}
       >
-        <ChevronIcon className={`h-full flex pointer-events-none ${contextButtonClass}`} />
+        <ChevronIcon
+          className={`h-full flex pointer-events-none ${contextButtonClass}`}
+        />
       </span>
       <ContextMenu
         open={open}

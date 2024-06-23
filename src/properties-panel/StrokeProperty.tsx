@@ -1,57 +1,69 @@
 import { ColorProperty } from "~/properties-panel/ColorProperty.tsx";
-import { useState } from "react";
 import { StrokePropertyData } from "~/properties-panel/StrokePropertyData.ts";
-import { CanvasShape } from "~/shape/CanvasShape.ts";
 import { SectionButton } from "~/core/SectionButton.tsx";
 import { PlusIcon } from "~/icon/PlusIcon.tsx";
+import { useShape } from "~/shape/useShape.ts";
+import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
 
 interface StrokePropertyProps {
-  shape: CanvasShape;
+  shapeId: string;
   className?: string;
 }
 
 export const StrokeProperty = (props: StrokePropertyProps) => {
-  const { shape, className } = props;
-  const [strokeProperty, setStrokeProperty] = useState<StrokePropertyData[]>(
-    shape.getStroke(),
-  );
+  const { shapeId, className } = props;
+  const { shape } = useShape(shapeId);
+  const { update } = useShapeUpdate();
 
-  const handleAddStroke = () => {
+
+  const handleAddStroke = async () => {
     const newStrokeProperty: StrokePropertyData = {
       color: "#ffffff",
       alpha: 1,
       width: 16,
     };
-    setStrokeProperty((prev) => {
-      const newStrokes = [...prev, newStrokeProperty];
-      shape.setStrokes(newStrokes, true);
-      return newStrokes;
+    await update({
+      id: shapeId,
+      strokes: [...(shape?.strokes ?? []), newStrokeProperty],
     });
   };
 
-  const handleStrokeChange = (index: number, value: string) => {
-    setStrokeProperty((prev) => {
-      const oldStroke = prev[index];
-      prev[index] = {
-        ...oldStroke,
-        color: value,
-      };
-      shape.setStrokes(prev, true);
-      return prev;
+  const handleStrokeChange = async (index: number, value: string) => {
+    const strokes = shape?.strokes ?? [];
+    strokes[index] = {
+      ...strokes[index],
+      color: value,
+    };
+    await update({
+      id: shapeId,
+      strokes,
     });
   };
 
-  const handleStrokeAlphaChange = (index: number, value: number) => {
-    setStrokeProperty((prev) => {
-      const oldStroke = prev[index];
-      prev[index] = {
-        ...oldStroke,
-        alpha: value,
-      };
-      shape.setStrokes(prev, true);
-      return prev;
+  const handleStrokeAlphaChange = async (index: number, value: number) => {
+    const strokes = shape?.strokes ?? [];
+    strokes[index] = {
+      ...strokes[index],
+      alpha: value,
+    };
+    await update({
+      id: shapeId,
+      strokes,
     });
   };
+
+  const handleRemoveStrokes = async (index: number) => {
+    const strokes = shape?.strokes.filter((_, i) => i !== index);
+    await update({
+      id: shapeId,
+      strokes,
+    });
+  };
+
+  const handleVisibilityToggle = (index: number) => {
+    console.log("visibility toggle", index);
+  };
+
 
   return (
     <>
@@ -62,7 +74,7 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
         icon={<PlusIcon />}
         className={className}
       />
-      {strokeProperty.map((stroke, index) => (
+      {shape?.strokes.map((stroke, index) => (
         <ColorProperty
           key={index}
           label={`stroke-${index}`}
@@ -70,6 +82,8 @@ export const StrokeProperty = (props: StrokePropertyProps) => {
           alpha={stroke.alpha}
           id={`stroke-${index}`}
           onChange={(value) => handleStrokeChange(index, value)}
+          onRemove={() => handleRemoveStrokes(index)}
+          onToggleVisibility={() => handleVisibilityToggle(index)}
           onChangeAlpha={(value) => handleStrokeAlphaChange(index, value)}
           className={className}
         />

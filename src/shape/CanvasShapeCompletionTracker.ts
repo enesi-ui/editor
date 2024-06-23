@@ -23,7 +23,11 @@ export class CanvasShapeCompletionTracker {
     const { x, y } = this.shape.getOrigin();
     const isInvertedX = pointer.x < x;
     const isInvertedY = pointer.y < y;
-    this.shape.setOrigin(isInvertedX ? pointer.x : x, isInvertedY ? pointer.y : y);
-    this.shape.setSize(Math.abs(pointer.x - x), Math.abs(pointer.y - y));
-  }
+    this.shape.setSizeOrigin(
+      isInvertedX ? pointer.x : x,
+      isInvertedY ? pointer.y : y,
+      Math.abs(pointer.x - x),
+      Math.abs(pointer.y - y),
+    );
+  };
 }

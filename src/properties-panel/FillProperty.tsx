@@ -1,76 +1,65 @@
 import { ColorProperty } from "~/properties-panel/ColorProperty.tsx";
-import { useState } from "react";
 import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
-import { CanvasShape } from "~/shape/CanvasShape.ts";
 import { SectionButton } from "~/core/SectionButton.tsx";
 import { PlusIcon } from "~/icon/PlusIcon.tsx";
+import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
+import { useShape } from "~/shape/useShape.ts";
 
 interface FillPropertyProps {
-  shape: CanvasShape;
+  shapeId: string;
   className?: string;
 }
 
-// todo no state needed use the shape from useshape
 export const FillProperty = (props: FillPropertyProps) => {
-  const { shape, className } = props;
-  const [fillProperty, setFillProperty] = useState<FillPropertyData[]>(
-    shape.getFill(),
-  );
+  const { shapeId, className } = props;
+  const { shape } = useShape(shapeId);
+  const { update } = useShapeUpdate();
 
-  const handleAddFill = () => {
+  const handleAddFill = async () => {
     const newFillProperty: FillPropertyData = {
       color: "#ffffff",
       alpha: 1,
     };
-    setFillProperty((prev) => {
-      const newFills = [...prev, newFillProperty];
-      shape.setFill(newFills, true);
-      return newFills;
+    await update({
+      id: shapeId,
+      fills: [...(shape?.fills ?? []), newFillProperty],
     });
   };
 
-  const handleFillChange = (index: number, value: string) => {
-    setFillProperty((prev) => {
-      const oldFill = prev[index];
-      prev[index] = {
-        ...oldFill,
-        color: value,
-      };
-      shape.setFill(prev, true);
-      return prev;
+  const handleFillChange = async (index: number, value: string) => {
+    const fills = shape?.fills ?? [];
+    fills[index] = {
+      ...fills[index],
+      color: value,
+    };
+    await update({
+      id: shapeId,
+      fills,
     });
   };
 
-  const handleFillAlphaChange = (index: number, value: number) => {
-    setFillProperty((prev) => {
-      const oldFill = prev[index];
-      prev[index] = {
-        ...oldFill,
-        alpha: value,
-      };
-      shape.setFill(prev, true);
-      return prev;
+  const handleFillAlphaChange = async (index: number, value: number) => {
+    const fills = shape?.fills ?? [];
+    fills[index] = {
+      ...fills[index],
+      alpha: value,
+    };
+    await update({
+      id: shapeId,
+      fills,
     });
   };
 
-  const handleRemoveFill = (index: number) => {
-    setFillProperty((prev) => {
-      const newFills = prev.filter((_, i) => i !== index);
-      shape.setFill(newFills, true);
-      return newFills;
+  const handleRemoveFill = async (index: number) => {
+    const fills = shape?.fills.filter((_, i) => i !== index);
+    await update({
+      id: shapeId,
+      fills,
     });
   };
 
   const handleVisibilityToggle = (index: number) => {
-    setFillProperty((prev) => {
-      const oldFill = prev[index];
-      prev[index] = {
-        ...oldFill,
-        hidden: !oldFill.hidden,
-      };
-      shape.setFill(prev, true);
-      return prev;
-    });
+    console.log("visibility toggle", index);
   };
 
   return (
@@ -82,7 +71,7 @@ export const FillProperty = (props: FillPropertyProps) => {
         icon={<PlusIcon />}
         className={className}
       />
-      {fillProperty.map((fill, index) => (
+      {shape?.fills.map((fill, index) => (
         <ColorProperty
           key={index}
           label={`fill-${index}`}
@@ -91,7 +80,7 @@ export const FillProperty = (props: FillPropertyProps) => {
           id={`fill-${index}`}
           onChange={(value) => handleFillChange(index, value)}
           onChangeAlpha={(value) => handleFillAlphaChange(index, value)}
-          className={className}
+          className={`pr-3 ${className}`}
           onRemove={() => handleRemoveFill(index)}
           onToggleVisibility={() => handleVisibilityToggle(index)}
           hidden={fill.hidden}

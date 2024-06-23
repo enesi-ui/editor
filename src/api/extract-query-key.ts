@@ -1,18 +1,22 @@
 export const extractQueryKeys = (message: {
   event: string;
-  data: { id?: string };
+  data: { [index: string]: unknown | string };
 }): {
   method: string;
   keys: string[];
 } => {
+  const isString = (value: unknown): value is string => typeof value === "string";
   const event = message.event.split("/");
+  const idKey = event.find((key) => key.startsWith(":"))?.slice(1);
   const method = event[event.length - 1];
   const keys = event
     .slice(0, event.length - 1)
-    .map((key) => (key === ":id" && message.data.id ? message.data.id : key));
+    .map((key) =>
+      key === `:${idKey}` && idKey && message.data[idKey] ? message.data[idKey] : key,
+    );
 
   return {
     method,
-    keys,
+    keys: keys.filter(isString)
   };
 };

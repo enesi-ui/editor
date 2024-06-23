@@ -4,6 +4,7 @@ import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 
 export interface Shape {
   id: string;
+  name: string;
   type: "ELLIPSE" | "RECTANGLE";
   fills: FillPropertyData[];
   strokes: StrokePropertyData[];
@@ -19,17 +20,13 @@ export interface Shape {
     x: number;
     y: number;
   };
+  zIndex: number;
   radius: number;
+  canvasId: string;
 }
 
 export interface CanvasShape extends CanvasObject {
-  updateGraphics: (data: Shape) => void;
-  setFill: (fills: FillPropertyData[], emit?: boolean) => void;
-  setStrokes: (strokes: StrokePropertyData[], emit?: boolean) => void;
-
-  getFill(): FillPropertyData[];
-  getStroke(): StrokePropertyData[];
-
+  update: (data: Shape) => void;
   serialize(): Omit<Shape, "id">;
 
   // top left corner of shape

@@ -25,7 +25,7 @@ export class CanvasDataResource implements CanvasObject {
 
   constructor(
     readonly app: Application,
-    private onSelect: (shape: CanvasObject) => void,
+    private onSelect: (id: string) => void,
     data: DataResource,
   ) {
     const origin = data.container;
@@ -64,6 +64,13 @@ export class CanvasDataResource implements CanvasObject {
     new CanvasObjectSelectMove(app, this);
   }
 
+  get name(): string | undefined {
+    throw new Error("Method not implemented.");
+  }
+  get zIndex() {
+    return this.container.zIndex;
+  }
+
   public deselect() {
     if (!this.selected) return;
     this.container.removeChild(this.selectGraphic);
@@ -73,7 +80,7 @@ export class CanvasDataResource implements CanvasObject {
   public select() {
     if (this.selected) return;
     this.container.addChild(this.selectGraphic);
-    this.onSelect(this);
+    this.onSelect(this.id);
     this.selected = true;
   }
   getOrigin(): { x: number; y: number } {
@@ -83,8 +90,8 @@ export class CanvasDataResource implements CanvasObject {
     };
   }
 
-  getSize(): { width: number; height: number, radius: number} {
-    return { height: 0, width: 0, radius: 0};
+  getSize(): { width: number; height: number; radius: number } {
+    return { height: 0, width: 0, radius: 0 };
   }
 
   showHighlight(): void {
@@ -107,13 +114,7 @@ export class CanvasDataResource implements CanvasObject {
     throw new Error("Size is not supported for this object type.");
   }
 
-  setSizeOrigin(
-    x: number,
-    y: number,
-    _: number,
-    _1: number,
-    round?: boolean,
-  ) {
+  setSizeOrigin(x: number, y: number, _: number, _1: number, round?: boolean) {
     this.container.x = round ? roundNumber(x) : x;
     this.container.y = round ? roundNumber(y) : y;
   }

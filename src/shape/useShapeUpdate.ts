@@ -5,7 +5,7 @@ export const useShapeUpdate = () => {
   const api = useShapesWebSocket();
 
   const mutation = useMutation({
-    mutationFn: api.put,
+    mutationFn: api.patch,
   });
 
   const removeMutation = useMutation({

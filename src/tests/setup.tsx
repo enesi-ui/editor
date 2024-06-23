@@ -1,8 +1,8 @@
 import {
-  renderHook,
-  render,
-  RenderOptions,
   fireEvent,
+  render,
+  renderHook,
+  RenderOptions,
 } from "@testing-library/react";
 import { ReactElement, ReactNode } from "react";
 import userEvent from "@testing-library/user-event";
@@ -33,4 +33,8 @@ const setup = (ui: ReactElement, options?: Omit<RenderOptions, "queries">) => {
   return { user: userEvent.setup(), ...render(ui, options) };
 };
 
-export { setup, fireEvent, setupHook };
+const createServer = () => {
+  return new WS(import.meta.env.VITE_APP_WS_URL || "ws://localhost:8082");
+}
+
+export { setup, fireEvent, setupHook, WithProviders, createServer };

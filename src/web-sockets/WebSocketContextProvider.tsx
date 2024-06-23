@@ -43,6 +43,7 @@ export const WebSocketContextProvider = ({
       const data = JSON.parse(event.data.toString());
       if (!data.data) return;
       const { keys, method } = extractQueryKeys(data);
+
       if (method === "post") {
         await queryClient.invalidateQueries({ queryKey: keys });
         return;

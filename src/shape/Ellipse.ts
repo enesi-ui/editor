@@ -23,6 +23,10 @@ export class Ellipse implements CanvasShape {
   public readonly id: string | undefined;
   private fills: FillPropertyData[] = [];
 
+  get name(): string | undefined {
+    return "Ellipse";
+  }
+
   constructor(
     origin: { x: number; y: number },
     readonly app: Application,
@@ -58,7 +62,11 @@ export class Ellipse implements CanvasShape {
     new CanvasObjectSelectMove(app, this);
   }
 
-  async updateGraphics(data: Shape): Promise<void> {
+  get zIndex() {
+    return this.container.zIndex;
+  }
+
+  async update(data: Shape): Promise<void> {
     this.setSizeOrigin(
       data.container.x,
       data.container.y,
@@ -129,7 +137,7 @@ export class Ellipse implements CanvasShape {
       });
   }
 
-  getSize(): { width: number; height: number, radius: number} {
+  getSize(): { width: number; height: number; radius: number } {
     return {
       width: this.graphics.width,
       height: this.graphics.height,

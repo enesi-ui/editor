@@ -94,7 +94,7 @@ export const ColorProperty = (props: ColorPropertyProps) => {
 
   return (
     <div
-      className={`flex items-center justify-between w-full pr-3 ${className}`}
+      className={`flex items-center justify-between w-full ${className}`}
     >
       <ContextMenu
         open={open}
@@ -106,13 +106,13 @@ export const ColorProperty = (props: ColorPropertyProps) => {
       </ContextMenu>
       <div
         className={
-          "input input-ghost input-sm flex items-center gap-2 group min-w-0 pr-0"
+          "input input-ghost input-sm flex items-center gap-2 group min-w-0 px-0"
         }
       >
-        {showLabel && <label htmlFor={id}>{label}</label>}
+        {showLabel && <label className='pl-1' htmlFor={id}>{label}</label>}
         <div
           style={{ backgroundColor: `${value}` }}
-          className="flex-[0_0_24px] h-[24px]"
+          className="flex-[0_0_24px] h-[24px] ml-2"
           onPointerDown={(event) => {
             toggle({
               x: event.pageX,

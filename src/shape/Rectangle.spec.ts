@@ -9,21 +9,10 @@ describe("Rectangle", () => {
   });
 
   it("sets origin", () => {
-    const rectangle = new Rectangle({ x: 0, y: 0 }, new Application());
-    rectangle.setOrigin(10, 10);
+    const app = new Application();
+    const rectangle = new Rectangle({ x: 0, y: 0 }, app);
+    rectangle.setSizeOrigin(10, 10, 10, 10);
     expect(rectangle.getOrigin()).toEqual({ x: 10, y: 10 });
-  });
-
-  it("sets size", () => {
-    const rectangle = new Rectangle({ x: 0, y: 0 }, new Application());
-    rectangle.setSize(10, 10);
-    expect(rectangle.getSize()).toEqual({ width: 10, height: 10, radius: 0 });
-  });
-
-  it("sets size origin", () => {
-    const rectangle = new Rectangle({ x: 0, y: 0 }, new Application());
-    rectangle.setSizeOrigin(0, 0, 10, 10);
-    expect(rectangle.getSize()).toEqual({ width: 10, height: 10, radius: 0 });
   });
 
   it("serializes", () => {
@@ -40,6 +29,9 @@ describe("Rectangle", () => {
       ],
       strokes: [],
       radius: 0,
+      name: "New Rectangle",
+      zIndex: 0,
+      canvasId: "canvasId",
     });
   });
 
@@ -69,7 +61,7 @@ describe("Rectangle", () => {
 
   it("updates graphics", () => {
     const rectangle = new Rectangle({ x: 0, y: 0 }, new Application());
-    rectangle.updateGraphics({
+    rectangle.update({
       type: "RECTANGLE",
       container: { x: 0, y: 0, width: 0, height: 0 },
       graphics: { x: 0, y: 0, width: 0, height: 0 },
@@ -81,6 +73,9 @@ describe("Rectangle", () => {
       ],
       strokes: [],
       radius: 0,
+      name: "Some Shape",
+      zIndex: 0,
+      canvasId: "123",
     });
     expect(rectangle.serialize()).toEqual({
       type: "RECTANGLE",
@@ -94,6 +89,9 @@ describe("Rectangle", () => {
       ],
       strokes: [],
       radius: 0,
+      name: "Some Shape",
+      zIndex: 0,
+      canvasId: "canvasId",
     });
   });
 });

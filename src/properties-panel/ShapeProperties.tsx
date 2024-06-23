@@ -1,27 +1,28 @@
 import { Property } from "~/properties-panel/Property.tsx";
-import { CanvasShape } from "~/shape/CanvasShape.ts";
 import { useEffect, useState } from "react";
-import { usePixi } from "~/pixi/pixiContext.ts";
 import { ShapePropertiesData } from "~/properties-panel/ShapePropertiesData.ts";
 import { StrokeProperty } from "~/properties-panel/StrokeProperty.tsx";
 import { round } from "~/utility/round.ts";
 import { FillProperty } from "~/properties-panel/FillProperty.tsx";
 import { useShape } from "~/shape/useShape.ts";
+import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
 
 export interface ShapePropertiesProps {
-  canvasShape: CanvasShape;
+  shapeId: string;
 }
 
 export const ShapeProperties = (props: ShapePropertiesProps) => {
-  const app = usePixi();
-  const { canvasShape } = props;
+  const { shapeId } = props;
 
-  const { shape } = useShape(canvasShape.id);
+  const { shape } = useShape(shapeId);
+  const { update } = useShapeUpdate();
 
-  const shapeId = canvasShape.id;
+  const { x, y } = shape?.container || { x: 0, y: 0 };
+  const {
+    graphics: { width, height },
+    radius,
+  } = shape || { graphics: { width: 0, height: 0 }, radius: 0 };
 
-  const { x, y } = canvasShape.getOrigin();
-  const { width, height, radius } = canvasShape.getSize();
   const [properties, setProperties] = useState<ShapePropertiesData>({
     x: x.toString(),
     y: y.toString(),
@@ -29,23 +30,6 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
     height: height.toString(),
     radius: radius.toString(),
   });
-
-  useEffect(() => {
-    if (!shape) return;
-    setProperties((prevState) => {
-      const {
-        container: { x, y },
-        graphics: { width, height },
-      } = shape;
-      return {
-        ...prevState,
-        x: x.toString(),
-        y: y.toString(),
-        width: width.toString(),
-        height: height.toString(),
-      };
-    });
-  }, [app, shape, setProperties]);
 
   const handlePropertyChange = async (
     id: "x" | "y" | "width" | "height" | "radius",
@@ -64,22 +48,48 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
     const roundedY = round(properties.y);
     const roundedWidth = round(properties.width);
     const roundedHeight = round(properties.height);
+    const roundedRadius = round(properties.radius);
     setProperties((prevState) => ({
       ...prevState,
       x: roundedX,
       y: roundedY,
       width: roundedWidth,
       height: roundedHeight,
+      radius: roundedRadius,
     }));
-    canvasShape.setSizeOrigin(
-      parseFloat(roundedX),
-      parseFloat(roundedY),
-      parseFloat(roundedWidth),
-      parseFloat(roundedHeight),
-      false,
-      true,
-    );
+    await update({
+      id: shapeId,
+      container: {
+        x: parseFloat(roundedX),
+        y: parseFloat(roundedY),
+        width: 0,
+        height: 0,
+      },
+      graphics: {
+        x: 0,
+        y: 0,
+        width: parseFloat(roundedWidth),
+        height: parseFloat(roundedHeight),
+      },
+      radius: parseFloat(roundedRadius),
+    });
   };
+
+  useEffect(() => {
+    if (!shape) return;
+    const {
+      container: { x, y },
+      graphics: { width, height },
+      radius,
+    } = shape;
+    setProperties({
+      x: x.toString(),
+      y: y.toString(),
+      width: width.toString(),
+      height: height.toString(),
+      radius: radius.toString(),
+    });
+  }, [shape]);
 
   return (
     <div className="grid grid-cols-2 px-0 gap-x-2 gap-y-1 mx-2">
@@ -131,9 +141,9 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         onFinish={handlePropertyFinish}
       />
       <div className="divider col-start-1 col-end-3"></div>
-      <FillProperty shape={canvasShape} className={"col-start-1 col-end-3"} />
+      <FillProperty shapeId={shapeId} className={"col-start-1 col-end-3"} />
       <div className="divider col-start-1 col-end-3"></div>
-      <StrokeProperty shape={canvasShape} className={"col-start-1 col-end-3"} />
+      <StrokeProperty shapeId={shapeId} className={"col-start-1 col-end-3"} />
     </div>
   );
 };

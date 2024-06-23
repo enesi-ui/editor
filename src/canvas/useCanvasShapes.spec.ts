@@ -1,21 +1,7 @@
 import { setupHook } from "~/tests/setup";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { useCanvasShapes } from "~/canvas/useCanvasShapes.ts";
 import { act, waitFor } from "@testing-library/react";
-
-vi.mock("~/shape/Rectangle", () => {
-  class RectangleMock {
-    constructor(
-      public container: Record<string, number>,
-      public app: Record<string, unknown>,
-      public options: Record<string, unknown>,
-    ) {}
-    get id() {
-      return "1";
-    }
-  }
-  return { Rectangle: RectangleMock };
-});
 
 describe("useCanvasShapes", () => {
   it("constructs without crashing", async () => {
