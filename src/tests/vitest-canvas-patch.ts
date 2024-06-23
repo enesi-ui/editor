@@ -1,10 +1,9 @@
-/* eslint-disable no-restricted-globals */
 import { afterAll, vi } from 'vitest'
 
 global.jest = vi
 
 declare global {
-  // eslint-disable-next-line no-var, vars-on-top
+  // eslint-disable-next-line no-var
   var jest: typeof vi | undefined
 }
 

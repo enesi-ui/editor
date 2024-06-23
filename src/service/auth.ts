@@ -1,4 +1,4 @@
-;export class User {
+export class User {
   constructor(public readonly name: string) {}
 }
 
@@ -9,7 +9,7 @@ class Auth {
       //return (await AWSAuth.currentSession()).isValid();
       return true;
     } catch (e) {
-      console.log('not logged in:', e)
+      console.log("not logged in:", e);
       return false;
     }
   }
@@ -17,7 +17,7 @@ class Auth {
   public async jwt(): Promise<string> {
     //const session = await AWSAuth.currentSession();
     //return session.getIdToken().getJwtToken();
-    return 'jwt';
+    return "jwt";
   }
 }
 
