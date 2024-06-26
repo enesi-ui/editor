@@ -2,15 +2,15 @@ import { useQueries, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useShapesWebSocket } from "~/api/useShapesWebSocket.ts";
 import notEmpty from "~/utility/notEmpty.ts";
 import { Shape } from "~/shape/CanvasShape.ts";
+import { shapeKeys } from "~/api/key-factory.ts";
 
-export const SHAPES_KEY = "shapes";
 export const useShapes = () => {
   const api = useShapesWebSocket();
 
   const queryAll = useQuery({
-    queryKey: [SHAPES_KEY],
+    queryKey: shapeKeys.all,
     queryFn: api.getAll,
-
+    structuralSharing: false,
   });
 
   function combine(results: UseQueryResult<Shape | null>[]) {
@@ -20,8 +20,9 @@ export const useShapes = () => {
   const data = useQueries({
     queries:
       queryAll.data?.map((shape) => ({
-        queryKey: [SHAPES_KEY, shape.id],
+        queryKey: shapeKeys.detail(shape.id),
         queryFn: () => api.get(shape.id),
+        initialData: shape,
         structuralSharing: false,
       })) ?? [],
     combine,

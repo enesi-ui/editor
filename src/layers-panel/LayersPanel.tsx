@@ -8,7 +8,7 @@ export const LayersPanel = ({ children }: LayerPanelProps) => {
     <div
       role="region"
       aria-label="Layer Panel"
-      className="absolute top-[var(--toolbar-height)] left-0 bottom-0 bg-base-100 p-2 z-10 min-w-76"
+      className="absolute top-[var(--toolbar-height)] left-0 bottom-0 bg-base-100 p-2 z-10 min-w-[200px] max-w-[300px]"
     >
       {children}
     </div>

@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { SHAPES_KEY } from "~/shape/useShapes.ts";
 import { useShapesWebSocket } from "~/api/useShapesWebSocket.ts";
+import { shapeKeys } from "~/api/key-factory.ts";
 
 export const useShape = (id?: string) => {
   const api = useShapesWebSocket();
 
   const query = useQuery({
-    queryKey: [SHAPES_KEY, id],
+    queryKey: id ? shapeKeys.detail(id) : [] ,
     queryFn: () => (id ? api.get(id) : null),
     enabled: !!id,
   });

@@ -6,7 +6,6 @@ import {
 } from "~/web-sockets/WebSocketContext.ts";
 import { useQueryClient } from "@tanstack/react-query";
 import { extractQueryKeys } from "~/api/extract-query-key.ts";
-import { CANVASID } from "~/canvas/useSelection.ts";
 
 function makeid(length: number) {
   let result = "";
@@ -31,9 +30,10 @@ export const WebSocketContextProvider = ({
 
   const webSocket = useRef<WebSocket | undefined>(undefined);
 
-  // todo put it inside a hook
   useEffect(() => {
-    const current = new WebSocket(import.meta.env.VITE_APP_WS_URL as string || "ws://localhost:8082");
+    const current = new WebSocket(
+      (import.meta.env.VITE_APP_WS_URL as string) || "ws://localhost:8082",
+    );
     current.addEventListener("open", () => {
       setReady(true);
     });
@@ -49,7 +49,6 @@ export const WebSocketContextProvider = ({
 
       if (method === "post") {
         await queryClient.invalidateQueries({ queryKey: [keys[0]] });
-        return;
       }
       queryClient.setQueryData(keys, data.data);
     });

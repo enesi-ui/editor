@@ -20,9 +20,12 @@ export class Ellipse implements CanvasShape {
   private highlightColor = "#0f79fb";
   private highlightWidth = 2;
   private highlighted = false;
-  public readonly id: string | undefined;
+
   private fills: FillPropertyData[] = [];
 
+  get id(): string {
+    return 'id';
+  }
   get name(): string | undefined {
     return "Ellipse";
   }
@@ -57,7 +60,6 @@ export class Ellipse implements CanvasShape {
 
     if (options?.data) {
       this.init(options?.data);
-      this.id = options?.data.id;
     }
     new CanvasObjectSelectMove(app, this);
   }

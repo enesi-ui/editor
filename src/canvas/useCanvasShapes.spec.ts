@@ -1,9 +1,14 @@
 import { setupHook } from "~/tests/setup";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { useCanvasShapes } from "~/canvas/useCanvasShapes.ts";
 import { act, waitFor } from "@testing-library/react";
+import { canvasShapeStore } from "~/canvas/CanvasShapeStore.ts";
+const store = canvasShapeStore();
 
 describe("useCanvasShapes", () => {
+  beforeEach(() => {
+    store.current.clear();
+  });
   it("constructs without crashing", async () => {
     const { result, server } = setupHook(() => useCanvasShapes());
 
@@ -13,19 +18,17 @@ describe("useCanvasShapes", () => {
   });
 
   it("initially returns no canvas shapes if no shapes are returned from endpoint", async () => {
-    const { result, server } = setupHook(() => useCanvasShapes());
+    const { server } = setupHook(() => useCanvasShapes());
     await act(async () => await server.connected);
 
-    await waitFor(() =>
-      expect(result.current.canvasShapes.current).toEqual([]),
-    );
+    await waitFor(() => expect(store.current.data).toEqual([]));
 
     act(() => server.close());
   });
 
   it("initially creates canvas shapes from the shapes returned from endpoint", async () => {
     expect.hasAssertions();
-    const { result, server } = setupHook(() => useCanvasShapes());
+    const { server } = setupHook(() => useCanvasShapes());
 
     await act(async () => await server.connected);
 
@@ -58,12 +61,8 @@ describe("useCanvasShapes", () => {
       }),
     );
 
-    await waitFor(() =>
-      expect(result.current.canvasShapes.current.length).toEqual(1),
-    );
-    await waitFor(() =>
-      expect(result.current.canvasShapes.current[0].id).toEqual("1"),
-    );
+    await waitFor(() => expect(store.current.data.length).toEqual(1));
+    await waitFor(() => expect(store.current.data[0].id).toEqual("1"));
 
     act(() => {
       server.close();

@@ -25,6 +25,13 @@ export const useWebsocket = () => {
   }, [context, context?.ready]);
 
   return {
+    listenOnce: <T>(callback: (data: {data: T, event: string }) => void) => {
+      const handler = (event: MessageEvent) => {
+        callback(JSON.parse(event.data.toString()));
+        context?.webSocket?.removeEventListener("message", handler);
+      };
+      context?.webSocket?.addEventListener("message", handler);
+    },
     send: (data: unknown) =>
       context?.webSocket?.readyState === 1
         ? context?.webSocket.send(JSON.stringify(data))

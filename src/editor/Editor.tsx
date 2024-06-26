@@ -1,6 +1,6 @@
 import { usePixi } from "~/pixi/pixiContext.ts";
 import { useEffect, useRef, useState } from "react";
-import { ShapeFactory } from "~/shape/ShapeFactory.tsx";
+import { CreateShape } from "~/shape/CreateShape.tsx";
 import { PropertiesPanel } from "~/properties-panel/PropertiesPanel.tsx";
 import { Toolbar } from "~/toolbar/Toolbar.tsx";
 import { LayersPanel } from "~/layers-panel/LayersPanel.tsx";
@@ -37,7 +37,7 @@ function Editor() {
   return (
     <div data-testid="editor-canvas">
       <Toolbar>
-        <ShapeFactory />
+        <CreateShape />
       </Toolbar>
       <LayersPanel>
         <Layers />

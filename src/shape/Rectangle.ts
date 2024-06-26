@@ -32,53 +32,16 @@ export class Rectangle implements CanvasShape {
   private radiusHandleSize = 4;
   private radiusHandlePosition = 12;
   private highlighted = false;
-  private readonly data: Shape;
-  get id() {
-    return this.data?.id;
-  }
-  get zIndex() {
-    return this.container.zIndex;
-  }
-  get name() {
-    return this.data?.name;
-  }
 
   constructor(
     origin: { x: number; y: number },
-    readonly app: Application,
+    private readonly app: Application,
+    private readonly data: Shape,
     private options?: {
       onSelect: (shapeId: string) => void;
       onUpdate?: (shape: Shape) => unknown;
-      data?: Shape;
     },
   ) {
-    this.data = options?.data ?? {
-      id: "null",
-      type: "RECTANGLE",
-      container: {
-        x: origin.x,
-        y: origin.y,
-        width: 0,
-        height: 0,
-      },
-      graphics: {
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-      },
-      strokes: [],
-      fills: [
-        {
-          color: this.initFill,
-          alpha: this.initFillAlpha,
-        },
-      ],
-      radius: 0,
-      zIndex: 0,
-      name: "New Rectangle",
-      canvasId: CANVASID,
-    };
     this.container = app.stage.addChild(new Container());
     this.container.eventMode = "static";
     this.container.sortableChildren = true;
@@ -112,15 +75,13 @@ export class Rectangle implements CanvasShape {
     this.radiusHandle = new Graphics();
     this.createRadiusHandles();
 
-    if (options?.data) {
-      this.setGraphics(
-        this.data.fills,
-        this.data.graphics.width,
-        this.data.graphics.height,
-      );
-      this.setStrokes(this.data.strokes);
-      this.updateGuides();
-    }
+    this.setGraphics(
+      this.data.fills,
+      this.data.graphics.width,
+      this.data.graphics.height,
+    );
+    this.setStrokes(this.data.strokes);
+    this.updateGuides();
 
     new CanvasObjectSelectMove(app, this);
   }
@@ -539,6 +500,7 @@ export class Rectangle implements CanvasShape {
     };
   }
 
+  // todo clean up these function, things might be rendering multiple times
   update(data: Omit<Shape, "id">) {
     this.data.name = data.name;
     this.data.zIndex = data.zIndex;
@@ -580,6 +542,16 @@ export class Rectangle implements CanvasShape {
     handler: (event: FederatedPointerEvent) => void,
   ) {
     this.container.off(event, handler);
+  }
+
+  get id() {
+    return this.data.id;
+  }
+  get zIndex() {
+    return this.container.zIndex;
+  }
+  get name() {
+    return this.data?.name;
   }
 
   clear() {

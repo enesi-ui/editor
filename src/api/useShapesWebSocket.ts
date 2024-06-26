@@ -26,15 +26,19 @@ export const useShapesWebSocket = () => {
       webSocket.send({
         event: "shapes/get",
       });
-      return [];
+      return client.getQueryData<Shape[]>(["shapes"]) ?? [];
     },
 
-    post: (body: Omit<Shape, "id">) => {
-      webSocket.send({
-        event: "shapes/post",
-        data: body,
+    post: (body: Omit<Shape, "id">): Promise<Shape> => {
+      return new Promise((resolve) => {
+        webSocket.listenOnce((data: { data: Shape }) => {
+          resolve(data.data);
+        });
+        webSocket.send({
+          event: "shapes/post",
+          data: body,
+        });
       });
-      return Promise.resolve();
     },
 
     patch: (body: Partial<Shape> & { id: string }): Promise<Shape> => {

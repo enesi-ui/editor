@@ -1,8 +1,9 @@
+export type Method = 'post' | 'get' | 'patch' | 'put' | 'delete';
 export const extractQueryKeys = (message: {
   event: string;
   data: { [index: string]: unknown | string };
 }): {
-  method: string;
+  method: Method;
   keys: string[];
 } => {
   const isString = (value: unknown): value is string => typeof value === "string";
@@ -16,7 +17,7 @@ export const extractQueryKeys = (message: {
     );
 
   return {
-    method,
+    method: method as Method,
     keys: keys.filter(isString)
   };
 };

@@ -9,7 +9,7 @@ export interface CanvasObject extends Layer {
   getOrigin(): { x: number; y: number };
   setOrigin(x: number, y: number, round?: boolean, emit?: boolean): void;
   setSizeOrigin(x: number, y: number, width: number, height: number, round?: boolean): void;
-  get id(): string | undefined;
+  get id(): string;
   get name(): string | undefined;
 
   clear(): void;

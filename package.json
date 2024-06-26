@@ -29,7 +29,6 @@
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
-    "jest-webgl-canvas-mock": "^2.5.3",
     "@tailwindcss/typography": "^0.5.13",
     "@tanstack/react-query-devtools": "^5.18.1",
     "@testing-library/jest-dom": "^6.1.4",
@@ -52,6 +51,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "jest-webgl-canvas-mock": "^2.5.3",
     "jsdom": "^22.1.0",
     "postcss": "^8.4.31",
     "prettier": "3.0.3",
