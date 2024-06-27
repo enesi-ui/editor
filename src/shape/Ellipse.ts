@@ -24,7 +24,7 @@ export class Ellipse implements CanvasShape {
   private fills: FillPropertyData[] = [];
 
   get id(): string {
-    return 'id';
+    return "id";
   }
   get name(): string | undefined {
     return "Ellipse";
@@ -95,11 +95,7 @@ export class Ellipse implements CanvasShape {
   async setOrigin(x: number, y: number, emit: boolean = true): Promise<void> {
     this.container.x = x;
     this.container.y = y;
-    if (this.id && emit)
-      await this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+    if (this.id && emit) this.options?.onUpdate?.(this.serialize());
   }
 
   async setSize(
@@ -117,11 +113,7 @@ export class Ellipse implements CanvasShape {
       .lineStyle(this.highlightWidth, this.highlightColor)
       .drawEllipse(0, 0, this.graphics.width / 2, this.graphics.height / 2)
       .endFill();
-    if (this.id && emit)
-      await this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+    if (this.id && emit) this.options?.onUpdate?.(this.serialize());
   }
 
   async setSizeOrigin(x: number, y: number, width: number, height: number) {
@@ -132,11 +124,7 @@ export class Ellipse implements CanvasShape {
       .beginFill(this.fill, this.fillAlpha)
       .drawEllipse(0, 0, width, height)
       .endFill();
-    if (this.id)
-      await this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+    if (this.id) this.options?.onUpdate?.(this.serialize());
   }
 
   getSize(): { width: number; height: number; radius: number } {
@@ -158,10 +146,7 @@ export class Ellipse implements CanvasShape {
     });
 
     if (emit && this.id)
-      this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+      this.options?.onUpdate?.(this.serialize());
   }
 
   setStrokes(strokes: StrokePropertyData[], emit: boolean = true) {
@@ -184,10 +169,7 @@ export class Ellipse implements CanvasShape {
     });
 
     if (this.id && emit)
-      this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+      this.options?.onUpdate?.(this.serialize());
   }
 
   get width() {
@@ -229,7 +211,7 @@ export class Ellipse implements CanvasShape {
     this.highlighted = false;
   }
 
-  serialize(): Omit<Shape, "id"> {
+  serialize(): Shape {
     throw new Error("Method not implemented.");
   }
 

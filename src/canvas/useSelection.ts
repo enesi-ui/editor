@@ -1,17 +1,17 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelectionWebSocket } from "~/api/useSelectionWebSocket.ts";
+import { selectionKeys } from "~/api/key-factory.ts";
 
 export const CANVASID = "canvasId";
 export const useSelection = () => {
   const api = useSelectionWebSocket();
 
   const { data } = useQuery({
-    queryKey: ["selection", CANVASID],
+    queryKey: selectionKeys.canvas(CANVASID),
     queryFn: () => api.get(CANVASID),
   });
 
   const mutation = useMutation({
-    mutationKey: ["selection", CANVASID],
     mutationFn: api.put,
   });
 
@@ -25,7 +25,6 @@ export const useSelection = () => {
   };
 
   const deselectAllSelect = async (shapeId: string) => {
-    console.log("deselectAllSelect", shapeId);
     await mutation.mutateAsync({
       canvasId: CANVASID,
       selectShapes: [shapeId],

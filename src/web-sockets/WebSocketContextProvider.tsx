@@ -45,11 +45,8 @@ export const WebSocketContextProvider = ({
 
       if (!data.data) return;
 
-      const { keys, method } = extractQueryKeys(data);
+      const { keys } = extractQueryKeys(data);
 
-      if (method === "post") {
-        await queryClient.invalidateQueries({ queryKey: [keys[0]] });
-      }
       queryClient.setQueryData(keys, data.data);
     });
 

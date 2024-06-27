@@ -27,7 +27,7 @@ export interface Shape {
 
 export interface CanvasShape extends CanvasObject {
   update: (data: Shape) => void;
-  serialize(): Omit<Shape, "id">;
+  serialize(): Shape;
 
   // top left corner of shape
   getImageData(): ImageData;

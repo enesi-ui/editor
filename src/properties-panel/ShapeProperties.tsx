@@ -42,7 +42,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
     }));
   };
 
-  const handlePropertyFinish = async () => {
+  const handlePropertyFinish = () => {
     if (!shapeId) return;
     const roundedX = round(properties.x);
     const roundedY = round(properties.y);
@@ -57,7 +57,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
       height: roundedHeight,
       radius: roundedRadius,
     }));
-    await update({
+    update({
       id: shapeId,
       container: {
         x: parseFloat(roundedX),
@@ -101,7 +101,7 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
         id="x"
         type="number"
         onChange={(value) => handlePropertyChange("x", value)}
-        onFinish={() => handlePropertyFinish()}
+        onFinish={handlePropertyFinish}
       />
       <Property
         topBorder

@@ -97,7 +97,7 @@ export class Rectangle implements CanvasShape {
       );
 
     this.handles.forEach((handle) => {
-      handle.zIndex = 3;
+      handle.zIndex = 4;
     });
 
     this.handles[0].cursor = "nwse-resize";
@@ -181,11 +181,7 @@ export class Rectangle implements CanvasShape {
     const { x, y } = this.getOrigin();
     this.setSizeOrigin(x, pointerY, localX, height - pointerY + y, true);
     this.setStrokes(this.data.strokes);
-    if (this.id)
-      this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+    if (this.id) this.options?.onUpdate?.(this.serialize());
   };
 
   resizeHandle2 = (event: FederatedPointerEvent) => {
@@ -203,11 +199,7 @@ export class Rectangle implements CanvasShape {
 
     this.setSize(x, y, true);
     this.setStrokes(this.data.strokes);
-    if (this.id)
-      this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+    if (this.id) this.options?.onUpdate?.(this.serialize());
   };
 
   resizeHandle0 = (event: FederatedPointerEvent) => {
@@ -224,11 +216,7 @@ export class Rectangle implements CanvasShape {
       true,
     );
     this.setStrokes(this.data.strokes);
-    if (this.id)
-      this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+    if (this.id) this.options?.onUpdate?.(this.serialize());
   };
 
   resizeRadiusHandle = (
@@ -258,11 +246,7 @@ export class Rectangle implements CanvasShape {
         .endFill();
     });
     this.updateGuides();
-    if (this.id)
-      this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+    if (this.id) this.options?.onUpdate?.(this.serialize());
   };
 
   private updateGuides() {
@@ -346,11 +330,7 @@ export class Rectangle implements CanvasShape {
   ): void {
     this.container.x = round ? roundNumber(x) : x;
     this.container.y = round ? roundNumber(y) : y;
-    if (emit && this.id)
-      this.options?.onUpdate?.({
-        ...this.serialize(),
-        id: this.id,
-      });
+    if (emit && this.id) this.options?.onUpdate?.(this.serialize());
   }
 
   private setSize(width: number, height: number, round: boolean = true): void {
@@ -472,8 +452,9 @@ export class Rectangle implements CanvasShape {
     this.highlighted = false;
   }
 
-  public serialize(): Omit<Shape, "id"> {
+  public serialize(): Shape {
     return {
+      id: this.data.id,
       type: "RECTANGLE",
       container: {
         x: this.container.x,

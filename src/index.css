@@ -18,6 +18,14 @@
   @apply focus-within:outline-1 focus-within:outline-accent focus-within:outline-offset-0;
 }
 
+.input-borderless-sm {
+  @apply input-sm bg-base-content/20 text-base-content/80;
+  @apply m-0 py-0;
+  @apply h-5;
+  @apply focus:outline-none;
+  @apply focus-within:outline-1 focus-within:outline-accent focus-within:outline-offset-0;
+}
+
 .divider {
   @apply my-0;
 }

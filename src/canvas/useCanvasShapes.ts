@@ -11,29 +11,16 @@ export const useCanvasShapes = () => {
   const { update } = useShapeUpdate();
   const { shapes } = useShapes();
 
-  const { selectedShapes, deselectAllSelect } = useSelection();
+  const { deselectAllSelect } = useSelection();
 
   const app = usePixi();
-
-  useEffect(() => {
-    store.current.data.forEach((shape) => {
-      if (selectedShapes?.includes(shape.id)) {
-        console.log("selecting shape", shape.id);
-        shape.select();
-      } else {
-        shape.deselect();
-      }
-    });
-  }, [store, selectedShapes]);
 
   useEffect(() => {
     if (!shapes) return;
     shapes.map((shape) => {
       const existing = store.current.find(shape.id);
-      if (existing) {
-        existing.update(shape);
-        return;
-      }
+      if (existing) return;
+
       // if shape does not exist, create it (coming from server)
       if (shape.type === "RECTANGLE") {
         store.current.add(
@@ -48,6 +35,5 @@ export const useCanvasShapes = () => {
         console.error("unknown shape type");
       }
     });
-  }, [store, selectedShapes, deselectAllSelect, update, app, shapes]);
-
+  }, [store, deselectAllSelect, update, app, shapes]);
 };

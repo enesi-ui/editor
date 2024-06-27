@@ -134,13 +134,13 @@ describe("Layers", () => {
     expect(screen.getByText("Some Other Shape")).toBeInTheDocument();
 
     await waitFor(() =>
-      expect(screen.getByText("Some Shape").closest("span")).toHaveClass(
+      expect(screen.getByText("Some Shape").closest("li")?.childNodes[0]).toHaveClass(
         "active",
       ),
     );
     await waitFor(() =>
       expect(
-        screen.getByText("Some Other Shape").closest("span"),
+        screen.getByText("Some Other Shape").closest("li")?.childNodes[0],
       ).not.toHaveClass("active"),
     );
   });
@@ -225,5 +225,112 @@ describe("Layers", () => {
     });
 
     await waitFor(() => expect(server).toReceiveMessage(selectMessage));
+  });
+
+  it("double clicking on the shape name changes the name to an input", async () => {
+    expect.hasAssertions();
+
+    const { user } = setup(<Layers />, { wrapper: WithProviders });
+    await act(async () => await server.connected);
+
+    const data = [
+      {
+        name: "Some Shape",
+        id: "1",
+        type: "RECTANGLE",
+        fills: [],
+        strokes: [],
+        container: { x: 0, y: 0, width: 0, height: 0 },
+        graphics: { x: 0, y: 0, width: 0, height: 0 },
+      },
+      {
+        name: "Some Other Shape",
+        id: "2",
+        type: "RECTANGLE",
+        fills: [],
+        strokes: [],
+        container: { x: 0, y: 0, width: 0, height: 0 },
+        graphics: { x: 0, y: 0, width: 0, height: 0 },
+      },
+    ];
+
+    act(() => {
+      server.send(
+        JSON.stringify({
+          event: "shapes/get",
+          data: data,
+        }),
+      );
+      server.send(
+        JSON.stringify({
+          event: "shapes/:id/get",
+          data: data[0],
+        }),
+      );
+    });
+
+    await waitFor(() =>
+      expect(screen.getByText("Some Shape")).toBeInTheDocument(),
+    );
+
+    await act(async () => {
+      await user.dblClick(screen.getByText("Some Shape"));
+    });
+
+    expect(screen.getByDisplayValue("Some Shape")).toBeInTheDocument();
+  });
+
+  it("double clicking on the shape name focuses the input", async () => {
+    expect.hasAssertions();
+
+    const { user } = setup(<Layers />, { wrapper: WithProviders });
+    await act(async () => await server.connected);
+
+    const data = [
+      {
+        name: "Some Shape",
+        id: "1",
+        type: "RECTANGLE",
+        fills: [],
+        strokes: [],
+        container: { x: 0, y: 0, width: 0, height: 0 },
+        graphics: { x: 0, y: 0, width: 0, height: 0 },
+      },
+      {
+        name: "Some Other Shape",
+        id: "2",
+        type: "RECTANGLE",
+        fills: [],
+        strokes: [],
+        container: { x: 0, y: 0, width: 0, height: 0 },
+        graphics: { x: 0, y: 0, width: 0, height: 0 },
+      },
+    ];
+
+    act(() => {
+      server.send(
+        JSON.stringify({
+          event: "shapes/get",
+          data: data,
+        }),
+      );
+      server.send(
+        JSON.stringify({
+          event: "shapes/:id/get",
+          data: data[0],
+        }),
+      );
+    });
+
+    await waitFor(() =>
+      expect(screen.getByText("Some Shape")).toBeInTheDocument(),
+    );
+
+    await act(async () => {
+      await user.dblClick(screen.getByText("Some Shape"));
+    });
+
+    expect(screen.getByDisplayValue("Some Shape")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Some Shape")).toHaveFocus();
   });
 });
