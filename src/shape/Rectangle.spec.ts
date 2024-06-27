@@ -37,6 +37,7 @@ describe("Rectangle", () => {
   it("serializes", () => {
     const rectangle = new Rectangle({ x: 0, y: 0 }, new Application(), data);
     expect(rectangle.serialize()).toEqual({
+      id: "12",
       type: "RECTANGLE",
       container: { x: 0, y: 0, width: 0, height: 0 },
       graphics: { x: 0, y: 0, width: 0, height: 0 },
@@ -97,6 +98,7 @@ describe("Rectangle", () => {
       canvasId: "123",
     });
     expect(rectangle.serialize()).toEqual({
+      id: "12",
       type: "RECTANGLE",
       container: { x: 0, y: 0, width: 0, height: 0 },
       graphics: { x: 0, y: 0, width: 0, height: 0 },
