@@ -1,48 +1,59 @@
+import { useState } from "react";
+
 interface PropertyProps {
   label: string;
-  defaultValue?: string | number;
   id: string;
   onChange?: (value: string) => void;
-  value?: string | number;
-  onFinish?: () => void;
+  value: string | number;
   type?: "text" | "number";
   fullWidth?: boolean;
   step?: number;
-  hoverEffect?: boolean;
-  inputFocus?: boolean;
   topBorder?: boolean;
 }
 export const Property = (props: PropertyProps) => {
+  const {
+    value,
+    id,
+    label,
+    type,
+    step,
+    onChange,
+  } = props;
+  const [internalValue, setInternalValue] = useState(value);
+
+  const handleChange = (value: string) => {
+    setInternalValue(value);
+  };
+
   return (
     <label
-      htmlFor={props.id}
+      htmlFor={id}
       className={`input input-ghost input-sm flex items-center gap-2`}
     >
-      {props.label}
+      {label}
       <input
-        id={props.id}
+        id={id}
         // note: number type breaks on all browsers with proper localisation
         // we use the pattern and step to enforce number input
         type={"text"}
-        defaultValue={props.defaultValue}
-        value={props.value}
-        pattern={props.type === "number" ? "[0-9]+([.,][0-9]+)?" : undefined}
-        step={props.type === "number" ? props.step ?? "1" : undefined}
+        value={internalValue}
+        pattern={type === "number" ? "[0-9]+([.,][0-9]+)?" : undefined}
+        step={type === "number" ? step ?? "1" : undefined}
         onChange={(e) => {
           e.preventDefault();
-          return props.onChange?.(e.target.value);
+          return handleChange(e.target.value);
         }}
         onBlur={(e) => {
           e.preventDefault();
-          return props.onFinish?.();
+          return onChange?.(internalValue.toString());
         }}
         onKeyDown={(e) => {
           e.stopPropagation();
           if (e.key === "Enter") {
-            return props.onFinish?.();
+            return onChange?.(internalValue.toString());
           }
         }}
-        className={'w-full'}
+        className={"w-full"}
       />
     </label>
   );

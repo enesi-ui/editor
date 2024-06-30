@@ -1,6 +1,4 @@
 import { Property } from "~/properties-panel/Property.tsx";
-import { useEffect, useState } from "react";
-import { ShapePropertiesData } from "~/properties-panel/ShapePropertiesData.ts";
 import { StrokeProperty } from "~/properties-panel/StrokeProperty.tsx";
 import { round } from "~/utility/round.ts";
 import { FillProperty } from "~/properties-panel/FillProperty.tsx";
@@ -17,128 +15,97 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
   const { shape } = useShape(shapeId);
   const { update } = useShapeUpdate();
 
-  const { x, y } = shape?.container || { x: 0, y: 0 };
   const {
+    container: { x, y },
     graphics: { width, height },
     radius,
-  } = shape || { graphics: { width: 0, height: 0 }, radius: 0 };
-
-  const [properties, setProperties] = useState<ShapePropertiesData>({
-    x: x.toString(),
-    y: y.toString(),
-    width: width.toString(),
-    height: height.toString(),
-    radius: radius.toString(),
-  });
+  } = shape || {
+    container: { x: 0, y: 0 },
+    graphics: { width: 0, height: 0 },
+    radius: 0,
+  };
 
   const handlePropertyChange = async (
     id: "x" | "y" | "width" | "height" | "radius",
     value: string,
   ) => {
     if (!shapeId) return;
-    setProperties((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
+    const rounded = round(value);
 
-  const handlePropertyFinish = () => {
-    if (!shapeId) return;
-    const roundedX = round(properties.x);
-    const roundedY = round(properties.y);
-    const roundedWidth = round(properties.width);
-    const roundedHeight = round(properties.height);
-    const roundedRadius = round(properties.radius);
-    setProperties((prevState) => ({
-      ...prevState,
-      x: roundedX,
-      y: roundedY,
-      width: roundedWidth,
-      height: roundedHeight,
-      radius: roundedRadius,
-    }));
-    update({
-      id: shapeId,
-      container: {
-        x: parseFloat(roundedX),
-        y: parseFloat(roundedY),
-        width: 0,
-        height: 0,
-      },
-      graphics: {
-        x: 0,
-        y: 0,
-        width: parseFloat(roundedWidth),
-        height: parseFloat(roundedHeight),
-      },
-      radius: parseFloat(roundedRadius),
-    });
+    switch (id) {
+      case "x":
+        update({
+          id: shapeId,
+          container: { x: parseFloat(rounded), y, height, width },
+        });
+        break;
+      case "y":
+        update({
+          id: shapeId,
+          container: { y: parseFloat(rounded), x, height, width },
+        });
+        break;
+      case "width":
+        update({
+          id: shapeId,
+          graphics: { width: parseFloat(rounded), height, x, y },
+        });
+        break;
+      case "height":
+        update({
+          id: shapeId,
+          graphics: { height: parseFloat(rounded), width, x, y },
+        });
+        break;
+      case "radius":
+        update({ id: shapeId, radius: parseFloat(rounded) });
+        break;
+    }
   };
-
-  useEffect(() => {
-    if (!shape) return;
-    const {
-      container: { x, y },
-      graphics: { width, height },
-      radius,
-    } = shape;
-    setProperties({
-      x: x.toString(),
-      y: y.toString(),
-      width: width.toString(),
-      height: height.toString(),
-      radius: radius.toString(),
-    });
-  }, [shape]);
 
   return (
     <div className="grid grid-cols-2 px-0 gap-x-2 gap-y-1 mx-2">
       <Property
+        key={`x-${x}`}
         topBorder
-        hoverEffect
         label="X"
-        value={properties.x}
+        value={x}
         id="x"
         type="number"
         onChange={(value) => handlePropertyChange("x", value)}
-        onFinish={handlePropertyFinish}
       />
       <Property
+        key={`y-${y}`}
         topBorder
-        hoverEffect
         label="Y"
-        value={properties.y}
+        value={y}
         id="y"
         type="number"
         onChange={(value) => handlePropertyChange("y", value)}
-        onFinish={handlePropertyFinish}
       />
       <Property
-        hoverEffect
+        key={`W-${width}`}
         label="W"
         id="width"
         type="number"
-        value={properties.width}
+        value={width}
         onChange={(value) => handlePropertyChange("width", value)}
-        onFinish={handlePropertyFinish}
       />
       <Property
-        hoverEffect
+        key={`H-${height}`}
         label="H"
-        value={properties.height}
+        value={height}
         id="height"
         type="number"
         onChange={(value) => handlePropertyChange("height", value)}
-        onFinish={handlePropertyFinish}
       />
       <Property
-        hoverEffect
+        key={`R-${radius}`}
         label="R"
-        value={properties.radius}
+        value={radius}
         id="radius"
         type="number"
         onChange={(value) => handlePropertyChange("radius", value)}
-        onFinish={handlePropertyFinish}
       />
       <div className="divider col-start-1 col-end-3"></div>
       <FillProperty shapeId={shapeId} className={"col-start-1 col-end-3"} />
