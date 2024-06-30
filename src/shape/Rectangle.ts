@@ -98,7 +98,7 @@ export class Rectangle implements CanvasShape {
     this.radiusHandle = new Graphics()
       .clear()
       .lineStyle(this.handlesWidth, this.handlesColor)
-      .drawCircle(0, 0, 0.1)
+      .drawCircle(0, 0, this.radiusHandleSize)
       .endFill();
     this.radiusHandle.zIndex = 4;
 
@@ -115,14 +115,8 @@ export class Rectangle implements CanvasShape {
         this.app.stage.off("pointermove", resize);
       });
     });
-  }
-
-  getFill(): FillPropertyData[] {
-    return this.data.fills;
-  }
-
-  getStroke(): StrokePropertyData[] {
-    return this.data.strokes;
+    this.radiusHandle.visible = false;
+    this.container.addChild(this.radiusHandle);
   }
 
   resizeRadiusHandle = (
@@ -186,7 +180,7 @@ export class Rectangle implements CanvasShape {
       .endFill();
   }
 
-  public setSizeOrigin(
+  private setSizeOrigin(
     x: number,
     y: number,
     width: number,
@@ -202,7 +196,7 @@ export class Rectangle implements CanvasShape {
     this.updateGuides();
   }
 
-  setGraphics(fills: FillPropertyData[], width: number, height: number) {
+  private setGraphics(fills: FillPropertyData[], width: number, height: number) {
     this.graphics.clear();
     fills.forEach((fillProperty) => {
       const { color, alpha } = fillProperty;
@@ -214,7 +208,7 @@ export class Rectangle implements CanvasShape {
     });
   }
 
-  setStrokes(strokes: StrokePropertyData[]) {
+  private setStrokes(strokes: StrokePropertyData[]) {
     this.currentStrokes.map((currentStroke) =>
       this.container.removeChild(currentStroke),
     );
@@ -239,7 +233,6 @@ export class Rectangle implements CanvasShape {
       stroke.zIndex = 2;
       this.currentStrokes.push(this.container.addChild(stroke));
     });
-    this.data.strokes = strokes;
   }
 
   get width() {
@@ -266,17 +259,17 @@ export class Rectangle implements CanvasShape {
 
   public deselect() {
     if (!this.selected) return;
-    this.container.removeChild(this.selectGraphics);
+    this.selectGraphics.visible = false;
     this.resizeHandles.hide();
-    this.container.removeChild(this.radiusHandle);
+    this.radiusHandle.visible = false;
     this.selected = false;
   }
 
   public select() {
     if (this.selected) return;
-    this.container.addChild(this.selectGraphics);
+    this.selectGraphics.visible = true;
     this.resizeHandles.show();
-    this.container.addChild(this.radiusHandle);
+    this.radiusHandle.visible = true;
     this.options?.onSelect(this.id);
     this.selected = true;
   }
@@ -328,6 +321,8 @@ export class Rectangle implements CanvasShape {
     this.data.fills = data.fills;
     this.data.strokes = data.strokes;
     this.data.radius = data.radius;
+    this.data.container = data.container;
+    this.data.graphics = data.graphics;
 
     this.setSizeOrigin(
       data.container.x,
@@ -393,9 +388,5 @@ export class Rectangle implements CanvasShape {
         opacity: ${this.data.fills[0].alpha};
       }
     `;
-  }
-
-  addChildren(children: Graphics[]): void {
-    this.container.addChild(...children);
   }
 }
