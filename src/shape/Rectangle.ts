@@ -11,14 +11,15 @@ import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
 import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 import { isValidHexCode } from "~/utility/hex.ts";
 import { CANVASID } from "~/canvas/useSelection.ts";
+import { ResizeHandles } from "~/shape/ResizeHandles.ts";
 
 export class Rectangle implements CanvasShape {
   private readonly graphics: Graphics;
   private readonly selectGraphics: Graphics;
   private readonly highlight: Graphics;
   private readonly container: Container;
+  private readonly resizeHandles: ResizeHandles;
   private currentStrokes: Graphics[] = [];
-  private readonly handles: Graphics[] = [];
   private radiusHandle: Graphics;
   private selected = false;
   private initFill = "#ffffff";
@@ -28,7 +29,6 @@ export class Rectangle implements CanvasShape {
   private handlesColor = "#c792e9";
   private handleFill = "#ffffff";
   private handlesWidth = 1;
-  private handleSize = 8;
   private radiusHandleSize = 4;
   private radiusHandlePosition = 12;
   private highlighted = false;
@@ -70,7 +70,11 @@ export class Rectangle implements CanvasShape {
       .endFill();
     this.selectGraphics.zIndex = 2;
 
-    this.createHandles();
+    this.resizeHandles = new ResizeHandles(app, this, (x, y, width, height) => {
+      this.setSizeOrigin(x, y, width, height, true);
+      if (this.id) this.options?.onUpdate?.(this.serialize());
+    });
+    this.resizeHandles.attach(this.container);
 
     this.radiusHandle = new Graphics();
     this.createRadiusHandles();
@@ -83,61 +87,10 @@ export class Rectangle implements CanvasShape {
     this.setStrokes(this.data.strokes);
     this.updateGuides();
 
-    new CanvasObjectSelectMove(app, this);
-  }
-
-  private createHandles() {
-    for (let i = 0; i < 4; i++)
-      this.handles.push(
-        new Graphics()
-          .clear()
-          .lineStyle(this.handlesWidth, this.handlesColor)
-          .drawRect(0, 0, 0, 0)
-          .endFill(),
-      );
-
-    this.handles.forEach((handle) => {
-      handle.zIndex = 4;
-    });
-
-    this.handles[0].cursor = "nwse-resize";
-    this.handles[0].eventMode = "static";
-    this.handles[0].on("pointerdown", (event) => {
-      event.stopPropagation();
-      this.app.stage.on("pointermove", this.resizeHandle0);
-      this.handles[0].once("pointerup", () => {
-        this.app.stage.off("pointermove", this.resizeHandle0);
-      });
-    });
-
-    this.handles[1].cursor = "nesw-resize";
-    this.handles[1].eventMode = "static";
-    this.handles[1].on("pointerdown", (event) => {
-      event.stopPropagation();
-      this.app.stage.on("pointermove", this.resizeHandle1);
-      this.handles[1].once("pointerup", () => {
-        this.app.stage.off("pointermove", this.resizeHandle1);
-      });
-    });
-
-    this.handles[2].cursor = "nesw-resize";
-    this.handles[2].eventMode = "static";
-    this.handles[2].on("pointerdown", (event) => {
-      event.stopPropagation();
-      this.app.stage.on("pointermove", this.resizeHandle2);
-      this.handles[2].once("pointerup", () => {
-        this.app.stage.off("pointermove", this.resizeHandle2);
-      });
-    });
-
-    this.handles[3].cursor = "nwse-resize";
-    this.handles[3].eventMode = "static";
-    this.handles[3].on("pointerdown", (event) => {
-      event.stopPropagation();
-      this.app.stage.on("pointermove", this.resizeHandle3);
-      this.handles[3].once("pointerup", () => {
-        this.app.stage.off("pointermove", this.resizeHandle3);
-      });
+    new CanvasObjectSelectMove(app, this, (x, y) => {
+      this.container.x = roundNumber(x)
+      this.container.y = roundNumber(y)
+      if (this.id) this.options?.onUpdate?.(this.serialize());
     });
   }
 
@@ -171,53 +124,6 @@ export class Rectangle implements CanvasShape {
   getStroke(): StrokePropertyData[] {
     return this.data.strokes;
   }
-
-  resizeHandle1 = async (event: FederatedPointerEvent) => {
-    const { x: localX } = this.container.toLocal(event.global);
-    const { height } = this.getSize();
-
-    const pointerY = event.global.y;
-
-    const { x, y } = this.getOrigin();
-    this.setSizeOrigin(x, pointerY, localX, height - pointerY + y, true);
-    this.setStrokes(this.data.strokes);
-    if (this.id) this.options?.onUpdate?.(this.serialize());
-  };
-
-  resizeHandle2 = (event: FederatedPointerEvent) => {
-    const { y: localY } = this.container.toLocal(event.global);
-    const { width } = this.getSize();
-
-    const pointerX = event.global.x;
-    const { x, y } = this.getOrigin();
-    this.setSizeOrigin(pointerX, y, width - pointerX + x, localY, true);
-    this.setStrokes(this.data.strokes);
-  };
-
-  resizeHandle3 = async (event: FederatedPointerEvent) => {
-    const { x, y } = this.container.toLocal(event.global);
-
-    this.setSize(x, y, true);
-    this.setStrokes(this.data.strokes);
-    if (this.id) this.options?.onUpdate?.(this.serialize());
-  };
-
-  resizeHandle0 = (event: FederatedPointerEvent) => {
-    const pointerX = event.global.x;
-    const pointerY = event.global.y;
-
-    const { x, y } = this.getOrigin();
-    const { width, height } = this.getSize();
-    this.setSizeOrigin(
-      pointerX,
-      pointerY,
-      width - pointerX + x,
-      height - pointerY + y,
-      true,
-    );
-    this.setStrokes(this.data.strokes);
-    if (this.id) this.options?.onUpdate?.(this.serialize());
-  };
 
   resizeRadiusHandle = (
     {
@@ -260,50 +166,8 @@ export class Rectangle implements CanvasShape {
       .lineStyle(this.highlightWidth, this.highlightColor)
       .drawRect(0, 0, this.graphics.width, this.graphics.height)
       .endFill();
-    this.handles[0]
-      .clear()
-      .beginFill(this.handleFill)
-      .lineStyle(this.handlesWidth, this.handlesColor)
-      .drawRect(
-        -this.handleSize / 2,
-        -this.handleSize / 2,
-        this.handleSize,
-        this.handleSize,
-      )
-      .endFill();
-    this.handles[1]
-      .clear()
-      .beginFill(this.handleFill)
-      .lineStyle(this.handlesWidth, this.handlesColor)
-      .drawRect(
-        this.graphics.width - this.handleSize / 2,
-        -this.handleSize / 2,
-        this.handleSize,
-        this.handleSize,
-      )
-      .endFill();
-    this.handles[2]
-      .clear()
-      .beginFill(this.handleFill)
-      .lineStyle(this.handlesWidth, this.handlesColor)
-      .drawRect(
-        -this.handleSize / 2,
-        this.graphics.height - this.handleSize / 2,
-        this.handleSize,
-        this.handleSize,
-      )
-      .endFill();
-    this.handles[3]
-      .clear()
-      .beginFill(this.handleFill)
-      .lineStyle(this.handlesWidth, this.handlesColor)
-      .drawRect(
-        this.graphics.width - this.handleSize / 2,
-        this.graphics.height - this.handleSize / 2,
-        this.handleSize,
-        this.handleSize,
-      )
-      .endFill();
+
+    this.resizeHandles.resize(this.graphics.width, this.graphics.height);
 
     const maxRadius = Math.min(this.graphics.width, this.graphics.height) / 2;
     this.radiusHandle
@@ -322,24 +186,6 @@ export class Rectangle implements CanvasShape {
       .endFill();
   }
 
-  public setOrigin(
-    x: number,
-    y: number,
-    round: boolean = true,
-    emit: boolean = false,
-  ): void {
-    this.container.x = round ? roundNumber(x) : x;
-    this.container.y = round ? roundNumber(y) : y;
-    if (emit && this.id) this.options?.onUpdate?.(this.serialize());
-  }
-
-  private setSize(width: number, height: number, round: boolean = true): void {
-    const roundedWidth = round ? roundNumber(width) : width;
-    const roundedHeight = round ? roundNumber(height) : height;
-    this.setGraphics(this.data.fills, roundedWidth, roundedHeight);
-    this.updateGuides();
-  }
-
   public setSizeOrigin(
     x: number,
     y: number,
@@ -352,13 +198,8 @@ export class Rectangle implements CanvasShape {
     const roundedWidth = round ? roundNumber(width) : width;
     const roundedHeight = round ? roundNumber(height) : height;
     this.setGraphics(this.data.fills, roundedWidth, roundedHeight);
+    this.setStrokes(this.data.strokes);
     this.updateGuides();
-  }
-
-  setFill(fills: FillPropertyData[]) {
-    this.data.fills = fills;
-    const { width, height } = this.graphics;
-    this.setGraphics(fills, width, height);
   }
 
   setGraphics(fills: FillPropertyData[], width: number, height: number) {
@@ -426,7 +267,7 @@ export class Rectangle implements CanvasShape {
   public deselect() {
     if (!this.selected) return;
     this.container.removeChild(this.selectGraphics);
-    this.container.removeChild(...this.handles);
+    this.resizeHandles.hide();
     this.container.removeChild(this.radiusHandle);
     this.selected = false;
   }
@@ -434,7 +275,7 @@ export class Rectangle implements CanvasShape {
   public select() {
     if (this.selected) return;
     this.container.addChild(this.selectGraphics);
-    this.container.addChild(...this.handles);
+    this.resizeHandles.show();
     this.container.addChild(this.radiusHandle);
     this.options?.onSelect(this.id);
     this.selected = true;
@@ -481,18 +322,19 @@ export class Rectangle implements CanvasShape {
     };
   }
 
-  // todo clean up these function, things might be rendering multiple times
   update(data: Omit<Shape, "id">) {
     this.data.name = data.name;
     this.data.zIndex = data.zIndex;
+    this.data.fills = data.fills;
+    this.data.strokes = data.strokes;
+    this.data.radius = data.radius;
+
     this.setSizeOrigin(
       data.container.x,
       data.container.y,
       data.graphics.width,
       data.graphics.height,
     );
-    this.setFill(data.fills);
-    this.setStrokes(data.strokes);
   }
 
   getImageData(): ImageData {
@@ -551,5 +393,9 @@ export class Rectangle implements CanvasShape {
         opacity: ${this.data.fills[0].alpha};
       }
     `;
+  }
+
+  addChildren(children: Graphics[]): void {
+    this.container.addChild(...children);
   }
 }

@@ -9,7 +9,9 @@ import { StrokePropertyData } from "~/properties-panel/StrokePropertyData.ts";
 import { CanvasObject } from "~/canvas/CanvasObject.ts";
 import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
 import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
+import { roundNumber } from "~/utility/round.ts";
 
+// todo: implement optimizations as in Rectangle.ts
 export class Ellipse implements CanvasShape {
   private readonly highlight: Graphics;
   private readonly graphics: Graphics;
@@ -61,7 +63,11 @@ export class Ellipse implements CanvasShape {
     if (options?.data) {
       this.init(options?.data);
     }
-    new CanvasObjectSelectMove(app, this);
+    new CanvasObjectSelectMove(app, this, (x, y) => {
+      this.container.x = roundNumber(x)
+      this.container.y = roundNumber(y)
+      if (this.id) this.options?.onUpdate?.(this.serialize());
+    });
   }
 
   get zIndex() {
@@ -78,12 +84,6 @@ export class Ellipse implements CanvasShape {
     this.setFill(data.fills);
     this.setStrokes(data.strokes);
   }
-  getFill(): FillPropertyData[] {
-    throw new Error("Method not implemented.");
-  }
-  getStroke(): StrokePropertyData[] {
-    throw new Error("Method not implemented.");
-  }
 
   getOrigin(): { x: number; y: number } {
     return {
@@ -92,31 +92,7 @@ export class Ellipse implements CanvasShape {
     };
   }
 
-  async setOrigin(x: number, y: number, emit: boolean = true): Promise<void> {
-    this.container.x = x;
-    this.container.y = y;
-    if (this.id && emit) this.options?.onUpdate?.(this.serialize());
-  }
-
-  async setSize(
-    width: number,
-    height: number,
-    emit: boolean = true,
-  ): Promise<void> {
-    this.graphics
-      .clear()
-      .beginFill(this.fill, this.fillAlpha)
-      .drawEllipse(0, 0, width, height)
-      .endFill();
-    this.highlight
-      .clear()
-      .lineStyle(this.highlightWidth, this.highlightColor)
-      .drawEllipse(0, 0, this.graphics.width / 2, this.graphics.height / 2)
-      .endFill();
-    if (this.id && emit) this.options?.onUpdate?.(this.serialize());
-  }
-
-  async setSizeOrigin(x: number, y: number, width: number, height: number) {
+  setSizeOrigin(x: number, y: number, width: number, height: number) {
     this.container.x = x;
     this.container.y = y;
     this.graphics

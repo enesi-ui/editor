@@ -18,7 +18,7 @@ const data: Shape = {
   radius: 0,
   name: "New Rectangle",
   zIndex: 0,
-  canvasId: "canvasId"
+  canvasId: "canvasId",
 };
 
 describe("Rectangle", () => {
@@ -67,7 +67,7 @@ describe("Rectangle", () => {
 
   it("sets fill", () => {
     const rectangle = new Rectangle({ x: 0, y: 0 }, new Application(), data);
-    rectangle.setFill([{ color: "#000000", alpha: 1 }]);
+    rectangle.update({ ...data, fills: [{ color: "#000000", alpha: 1 }] });
     expect(rectangle.getFill()).toEqual([{ color: "#000000", alpha: 1 }]);
   });
 

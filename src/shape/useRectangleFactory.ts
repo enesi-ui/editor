@@ -7,12 +7,11 @@ import { Rectangle } from "~/shape/Rectangle.ts";
 import { useShapesPost } from "~/shape/useShapesPost.ts";
 import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
 import { canvasShapeStore } from "~/canvas/CanvasShapeStore.ts";
+import { ResizeHandles } from "~/shape/ResizeHandles.ts";
 
 const createGuides = (container: Container) => {
   const highlightColor = "#c792e9";
   const highlightWidth = 2;
-  const handlesColor = "#c792e9";
-  const handlesWidth = 1;
 
   const highlight = new Graphics()
     .clear()
@@ -28,41 +27,19 @@ const createGuides = (container: Container) => {
     .endFill();
   selectGraphics.zIndex = 2;
 
-  const handles = [];
-  for (let i = 0; i < 4; i++)
-    handles.push(
-      new Graphics()
-        .clear()
-        .lineStyle(handlesWidth, handlesColor)
-        .drawRect(0, 0, 0, 0)
-        .endFill(),
-    );
-
-  handles.forEach((handle) => {
-    handle.zIndex = 3;
-  });
-
   container.addChild(highlight);
   container.addChild(selectGraphics);
 
-  handles.forEach((handle) => {
-    container.addChild(handle);
-  });
-
-  return { highlight, selectGraphics, handles };
+  return { highlight, selectGraphics };
 };
 const renderGuides = (
   graphics: Graphics,
   highlight: Graphics,
   selectGraphics: Graphics,
-  handles: Graphics[],
+  handles: ResizeHandles,
 ) => {
   const highlightColor = "#c792e9";
   const highlightWidth = 2;
-  const handlesColor = "#c792e9";
-  const handleFill = "#ffffff";
-  const handlesWidth = 1;
-  const handleSize = 8;
 
   highlight
     .clear()
@@ -78,52 +55,7 @@ const renderGuides = (
     .endFill();
   selectGraphics.zIndex = 2;
 
-  handles[0]
-    .clear()
-    .beginFill(handleFill)
-    .lineStyle(handlesWidth, handlesColor)
-    .drawRect(-handleSize / 2, -handleSize / 2, handleSize, handleSize)
-    .endFill();
-  handles[0].zIndex = 3;
-
-  handles[1]
-    .clear()
-    .beginFill(handleFill)
-    .lineStyle(handlesWidth, handlesColor)
-    .drawRect(
-      graphics.width - handleSize / 2,
-      -handleSize / 2,
-      handleSize,
-      handleSize,
-    )
-    .endFill();
-  handles[1].zIndex = 3;
-
-  handles[2]
-    .clear()
-    .beginFill(handleFill)
-    .lineStyle(handlesWidth, handlesColor)
-    .drawRect(
-      -handleSize / 2,
-      graphics.height - handleSize / 2,
-      handleSize,
-      handleSize,
-    )
-    .endFill();
-  handles[2].zIndex = 3;
-
-  handles[3]
-    .clear()
-    .beginFill(handleFill)
-    .lineStyle(handlesWidth, handlesColor)
-    .drawRect(
-      graphics.width - handleSize / 2,
-      graphics.height - handleSize / 2,
-      handleSize,
-      handleSize,
-    )
-    .endFill();
-  handles[3].zIndex = 3;
+  handles.resize(graphics.width, graphics.height);
 };
 
 export const useRectangleFactory = () => {
@@ -168,7 +100,11 @@ export const useRectangleFactory = () => {
     );
     graphics.zIndex = 1;
 
-    const { handles, highlight, selectGraphics } = createGuides(container);
+    const { highlight, selectGraphics } = createGuides(container);
+
+    const handles = new ResizeHandles(app);
+    handles.attach(container);
+    handles.show();
 
     const move = (event: FederatedPointerEvent) => {
       const pointer = event.global;

@@ -5,13 +5,14 @@ export class CanvasObjectSelectMove {
   constructor(
     readonly app: Application,
     private readonly canvasObject: CanvasObject,
+    private readonly onMove: (x: number, y: number) => void,
   ) {
     let dragPoint: Point;
     const handleDragMove = (event: FederatedPointerEvent) => {
       event.stopPropagation();
 
       const local = event.getLocalPosition(this.app.stage);
-      this.canvasObject.setOrigin(local.x - dragPoint.x, local.y - dragPoint.y, true, true);
+      this.onMove(local.x - dragPoint.x, local.y - dragPoint.y);
     };
     const handleDragStart = (event: FederatedPointerEvent) => {
       event.stopPropagation();

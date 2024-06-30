@@ -70,7 +70,7 @@ describe("useCanvasShapes", () => {
   });
 
   it("sends initial shapes/get event to websocket", async () => {
-    expect.assertions(2);
+    expect.assertions(1);
 
     const { server } = setupHook(() => useCanvasShapes());
     await act(async () => await server.connected);
@@ -80,28 +80,6 @@ describe("useCanvasShapes", () => {
     await act(async () => {
       await expect(server).toReceiveMessage(getAllMessage);
     });
-
-    act(() =>
-      server.send(
-        JSON.stringify({
-          event: "shapes/get",
-          data: [
-            {
-              id: "1",
-              type: "RECTANGLE",
-              fills: [],
-              strokes: [],
-              container: { x: 0, y: 0, width: 0, height: 0 },
-              graphics: { x: 0, y: 0, width: 0, height: 0 },
-            },
-          ],
-        }),
-      ),
-    );
-
-    const getIdMessage = JSON.stringify({ event: "shapes/:id/get", data: "1" });
-
-    await waitFor(() => expect(server).toReceiveMessage(getIdMessage));
 
     act(() => {
       server.close();

@@ -7,8 +7,8 @@ export interface CanvasObject extends Layer {
   showHighlight(): void;
   hideHighlight(): void;
   getOrigin(): { x: number; y: number };
-  setOrigin(x: number, y: number, round?: boolean, emit?: boolean): void;
-  setSizeOrigin(x: number, y: number, width: number, height: number, round?: boolean): void;
+  getSize(): { width: number; height: number };
+
   get id(): string;
   get name(): string | undefined;
 
