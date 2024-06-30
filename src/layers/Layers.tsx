@@ -100,9 +100,12 @@ export function Layer({ shapeId }: { shapeId: string }) {
 
 export function Layers() {
   const { shapes } = useShapes();
+
+  const orderedShapes = shapes?.sort((a, b) => a.zIndex - b.zIndex);
+
   return (
     <ul className="menu rounded-lg w-full">
-      {shapes?.map((shape) => <Layer shapeId={shape.id} key={shape.id} />)}
+      {orderedShapes?.map((shape) => <Layer shapeId={shape.id} key={shape.id} />)}
     </ul>
   );
 }
