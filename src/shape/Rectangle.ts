@@ -21,7 +21,6 @@ export class Rectangle implements CanvasShape {
   private readonly resizeHandles: ResizeHandles;
   private currentStrokes: Graphics[] = [];
   private radiusHandle: Graphics;
-  private selected = false;
   private initFill = "#ffffff";
   private initFillAlpha = 1;
   private highlightColor = "#c792e9";
@@ -31,7 +30,9 @@ export class Rectangle implements CanvasShape {
   private handlesWidth = 1;
   private radiusHandleSize = 4;
   private radiusHandlePosition = 12;
-  private highlighted = false;
+  get id() {
+    return this.data.id;
+  }
 
   constructor(
     origin: { x: number; y: number },
@@ -62,6 +63,8 @@ export class Rectangle implements CanvasShape {
       .drawRect(0, 0, 0, 0)
       .endFill();
     this.highlight.zIndex = 2;
+    this.highlight.visible = false;
+    this.container.addChild(this.highlight);
 
     this.selectGraphics = new Graphics()
       .clear()
@@ -69,6 +72,8 @@ export class Rectangle implements CanvasShape {
       .drawRect(0, 0, 0, 0)
       .endFill();
     this.selectGraphics.zIndex = 2;
+    this.selectGraphics.visible = false;
+    this.container.addChild(this.selectGraphics);
 
     this.resizeHandles = new ResizeHandles(app, this, (x, y, width, height) => {
       this.setSizeOrigin(x, y, width, height, true);
@@ -88,8 +93,8 @@ export class Rectangle implements CanvasShape {
     this.updateGuides();
 
     new CanvasObjectSelectMove(app, this, (x, y) => {
-      this.container.x = roundNumber(x)
-      this.container.y = roundNumber(y)
+      this.container.x = roundNumber(x);
+      this.container.y = roundNumber(y);
       if (this.id) this.options?.onUpdate?.(this.serialize());
     });
   }
@@ -196,7 +201,11 @@ export class Rectangle implements CanvasShape {
     this.updateGuides();
   }
 
-  private setGraphics(fills: FillPropertyData[], width: number, height: number) {
+  private setGraphics(
+    fills: FillPropertyData[],
+    width: number,
+    height: number,
+  ) {
     this.graphics.clear();
     fills.forEach((fillProperty) => {
       const { color, alpha } = fillProperty;
@@ -235,13 +244,6 @@ export class Rectangle implements CanvasShape {
     });
   }
 
-  get width() {
-    return this.container.width;
-  }
-  get height() {
-    return this.container.height;
-  }
-
   getSize(): { width: number; height: number; radius: number } {
     return {
       width: this.graphics.width,
@@ -258,32 +260,28 @@ export class Rectangle implements CanvasShape {
   }
 
   public deselect() {
-    if (!this.selected) return;
-    this.selectGraphics.visible = false;
+    if (!this.selectGraphics.visible) return;
     this.resizeHandles.hide();
     this.radiusHandle.visible = false;
-    this.selected = false;
+    this.selectGraphics.visible = false;
   }
 
   public select() {
-    if (this.selected) return;
-    this.selectGraphics.visible = true;
+    if (this.selectGraphics.visible) return;
     this.resizeHandles.show();
     this.radiusHandle.visible = true;
     this.options?.onSelect(this.id);
-    this.selected = true;
+    this.selectGraphics.visible = true;
   }
 
   public showHighlight() {
-    if (this.highlighted) return;
-    this.container.addChild(this.highlight);
-    this.highlighted = true;
+    if (this.highlight.visible) return;
+    this.highlight.visible = true;
   }
 
   public hideHighlight() {
-    if (!this.highlighted) return;
-    this.container.removeChild(this.highlight);
-    this.highlighted = false;
+    if (!this.highlight.visible) return;
+    this.highlight.visible = false;
   }
 
   public serialize(): Shape {
@@ -309,7 +307,7 @@ export class Rectangle implements CanvasShape {
       })),
       fills: this.data.fills,
       radius: this.data.radius,
-      zIndex: this.zIndex,
+      zIndex: this.data.zIndex,
       name: this.data.name,
       canvasId: CANVASID,
     };
@@ -360,16 +358,6 @@ export class Rectangle implements CanvasShape {
     handler: (event: FederatedPointerEvent) => void,
   ) {
     this.container.off(event, handler);
-  }
-
-  get id() {
-    return this.data.id;
-  }
-  get zIndex() {
-    return this.container.zIndex;
-  }
-  get name() {
-    return this.data?.name;
   }
 
   clear() {

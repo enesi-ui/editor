@@ -61,14 +61,10 @@ export class CanvasDataResource implements CanvasObject {
       .endFill();
 
     this.id = data.id;
-    new CanvasObjectSelectMove(app, this);
-  }
-
-  get name(): string | undefined {
-    throw new Error("Method not implemented.");
-  }
-  get zIndex() {
-    return this.container.zIndex;
+    new CanvasObjectSelectMove(app, this, (x, y) => {
+      this.container.x += x;
+      this.container.y += y;
+    });
   }
 
   public deselect() {

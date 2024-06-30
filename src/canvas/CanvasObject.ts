@@ -10,7 +10,6 @@ export interface CanvasObject extends Layer {
   getSize(): { width: number; height: number };
 
   get id(): string;
-  get name(): string | undefined;
 
   clear(): void;
 

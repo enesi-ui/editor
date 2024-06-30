@@ -3,8 +3,6 @@ import { vi } from "vitest";
 
 export const canvasShapeMock: CanvasShape = {
   getSize: vi.fn(),
-  zIndex: 0,
-  name: "mockShape",
   update: vi.fn(),
   id: 'mockshapeId',
   deselect: vi.fn(),

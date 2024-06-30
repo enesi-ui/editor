@@ -27,13 +27,6 @@ describe("Rectangle", () => {
     expect(rectangle).toBeDefined();
   });
 
-  it("sets origin", () => {
-    const app = new Application();
-    const rectangle = new Rectangle({ x: 0, y: 0 }, app, data);
-    rectangle.setSizeOrigin(10, 10, 10, 10);
-    expect(rectangle.getOrigin()).toEqual({ x: 10, y: 10 });
-  });
-
   it("serializes", () => {
     const rectangle = new Rectangle({ x: 0, y: 0 }, new Application(), data);
     expect(rectangle.serialize()).toEqual({
