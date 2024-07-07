@@ -69,7 +69,7 @@ describe("Layers", () => {
     expect(screen.getByText("Some Other Shape")).toBeInTheDocument();
   });
 
-  it("renders a list of shapes with a selected shape", async () => {
+  it("renders a list of layer with a selected shape", async () => {
     expect.hasAssertions();
     setup(<Layers />, { wrapper: WithProviders });
     await act(async () => await server.connected);
@@ -134,9 +134,9 @@ describe("Layers", () => {
     expect(screen.getByText("Some Other Shape")).toBeInTheDocument();
 
     await waitFor(() =>
-      expect(screen.getByText("Some Shape").closest("li")?.childNodes[0]).toHaveClass(
-        "active",
-      ),
+      expect(
+        screen.getByText("Some Shape").closest("li")?.childNodes[0],
+      ).toHaveClass("active"),
     );
     await waitFor(() =>
       expect(
@@ -145,7 +145,7 @@ describe("Layers", () => {
     );
   });
 
-  it("renders the selected shape after clicking on it", async () => {
+  it("renders the selected layer after clicking on it", async () => {
     expect.hasAssertions();
 
     setup(<Layers />, { wrapper: WithProviders });
@@ -227,7 +227,7 @@ describe("Layers", () => {
     await waitFor(() => expect(server).toReceiveMessage(selectMessage));
   });
 
-  it("double clicking on the shape name changes the name to an input", async () => {
+  it("double clicking on the layer name changes the name to an input", async () => {
     expect.hasAssertions();
 
     const { user } = setup(<Layers />, { wrapper: WithProviders });
@@ -280,7 +280,7 @@ describe("Layers", () => {
     expect(screen.getByDisplayValue("Some Shape")).toBeInTheDocument();
   });
 
-  it("double clicking on the shape name focuses the input", async () => {
+  it("double clicking on the layer name focuses the input", async () => {
     expect.hasAssertions();
 
     const { user } = setup(<Layers />, { wrapper: WithProviders });
@@ -334,7 +334,7 @@ describe("Layers", () => {
     expect(screen.getByDisplayValue("Some Shape")).toHaveFocus();
   });
 
-  it("renders shapes in order of z-index", async () => {
+  it("renders layer in order of z-index", async () => {
     expect.hasAssertions();
 
     setup(<Layers />, { wrapper: WithProviders });

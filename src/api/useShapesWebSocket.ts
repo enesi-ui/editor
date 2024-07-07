@@ -43,12 +43,15 @@ export const useShapesWebSocket = () => {
     },
 
     patch: (body: Partial<Shape> & { id: string }): Promise<Shape> => {
-      webSocket.send({
-        event: "shapes/:id/patch",
-        data: body,
+      return new Promise((resolve) => {
+        webSocket.listenOnce((data: { data: Shape }) => {
+          resolve(data.data);
+        });
+        webSocket.send({
+          event: "shapes/:id/patch",
+          data: body,
+        });
       });
-      const shape = client.getQueryData<Shape>(shapeKeys.detail(body.id));
-      return Promise.resolve({ shape, ...body } as Shape);
     },
   };
 };

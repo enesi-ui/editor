@@ -12,6 +12,6 @@ export const useShapes = () => {
 
   return {
     shapes: query.data,
-    isLoading: query.isLoading,
+    ...query,
   };
 };

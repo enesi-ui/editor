@@ -28,6 +28,7 @@ export interface Shape {
 export interface CanvasShape extends CanvasObject {
   update: (data: Shape) => void;
   serialize(): Shape;
+  getSize(): { width: number; height: number };
 
   // top left corner of shape
   getImageData(): ImageData;

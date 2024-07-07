@@ -1,13 +1,10 @@
 import { FederatedPointerEvent } from "pixi.js";
-import { Layer } from "~/layers/Layer.ts";
-
-export interface CanvasObject extends Layer {
+export interface CanvasObject {
   select(): void;
   deselect(): void;
   showHighlight(): void;
   hideHighlight(): void;
   getOrigin(): { x: number; y: number };
-  getSize(): { width: number; height: number };
 
   get id(): string;
 

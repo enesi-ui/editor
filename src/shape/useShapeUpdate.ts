@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useShapesWebSocket } from "~/api/useShapesWebSocket.ts";
 import { shapeKeys } from "~/api/key-factory.ts";
+import { Shape } from "~/shape/CanvasShape.ts";
 
 export const useShapeUpdate = () => {
   const queryClient = useQueryClient();
@@ -11,7 +12,10 @@ export const useShapeUpdate = () => {
     onSettled: async (data) => {
       if (!data) return;
       const { id: shapeId } = data;
-      await queryClient.invalidateQueries({ queryKey: shapeKeys.detail(shapeId) });
+      queryClient.setQueryData(shapeKeys.detail(shapeId), data);
+      queryClient.setQueryData(shapeKeys.all, (shapes: Shape[]) =>
+        shapes.map((shape) => (shape.id === shapeId ? data : shape)),
+      );
     },
   });
 

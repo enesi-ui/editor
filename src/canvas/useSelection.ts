@@ -24,8 +24,8 @@ export const useSelection = () => {
     });
   };
 
-  const deselectAllSelect = async (shapeId: string) => {
-    await mutation.mutateAsync({
+  const deselectAllSelect = (shapeId: string) => {
+    mutation.mutate({
       canvasId: CANVASID,
       selectShapes: [shapeId],
       deselectShapes: [],
