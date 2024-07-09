@@ -30,6 +30,10 @@
   @apply my-0;
 }
 
+.border-panel {
+    @apply border-[1px] border-base-content/20;
+}
+
 @layer {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

@@ -10,7 +10,6 @@ import { roundNumber } from "~/utility/round.ts";
 import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
 import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 import { isValidHexCode } from "~/utility/hex.ts";
-import { CANVASID } from "~/canvas/useSelection.ts";
 import { ResizeHandles } from "~/shape/ResizeHandles.ts";
 
 export class Rectangle implements CanvasShape {
@@ -32,6 +31,10 @@ export class Rectangle implements CanvasShape {
   private radiusHandlePosition = 12;
   get id() {
     return this.data.id;
+  }
+
+  get canvasId() {
+    return this.data.canvasId;
   }
 
   constructor(
@@ -309,7 +312,7 @@ export class Rectangle implements CanvasShape {
       radius: this.data.radius,
       zIndex: this.data.zIndex,
       name: this.data.name,
-      canvasId: CANVASID,
+      canvasId: this.data.canvasId,
     };
   }
 

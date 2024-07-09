@@ -1,7 +1,7 @@
 import { Container, FederatedPointerEvent, Graphics } from "pixi.js";
 import { Shape } from "~/shape/CanvasShape.ts";
 import { isValidHexCode } from "~/utility/hex.ts";
-import { CANVASID, useSelection } from "~/canvas/useSelection.ts";
+import { useSelection } from "~/canvas/useSelection.ts";
 import { usePixi } from "~/pixi/pixiContext.ts";
 import { Rectangle } from "~/shape/Rectangle.ts";
 import { useShapesPost } from "~/shape/useShapesPost.ts";
@@ -58,13 +58,13 @@ const renderGuides = (
   handles.resize(graphics.width, graphics.height);
 };
 
-export const useRectangleFactory = () => {
+export const useRectangleFactory = (canvasId: string) => {
   const app = usePixi();
 
   const initFill = "#ffffff";
   const initFillAlpha = 1;
 
-  const { deselectAllSelect } = useSelection();
+  const { deselectAllSelect } = useSelection(canvasId);
 
   const { post } = useShapesPost();
 
@@ -154,7 +154,7 @@ export const useRectangleFactory = () => {
             alpha: initFillAlpha,
           },
         ],
-        canvasId: CANVASID,
+        canvasId,
         zIndex: container.zIndex,
         radius: 0,
         name: "New Rectangle",

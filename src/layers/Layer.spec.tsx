@@ -17,7 +17,9 @@ describe("Layer", () => {
   });
 
   it("renders without crashing", async () => {
-    setup(<Layer shapeId="1" />, { wrapper: WithProviders });
+    setup(<Layer canvasId={"canvasId"} objectId="1" />, {
+      wrapper: WithProviders,
+    });
     await act(async () => await server.connected);
 
     act(() => {
@@ -44,7 +46,11 @@ describe("Layer", () => {
     const handleDragStart = vi.fn();
 
     setup(
-      <Layer shapeId="1" onDragStart={handleDragStart} />,
+      <Layer
+        canvasId={"canvasId"}
+        objectId="1"
+        onDragStart={handleDragStart}
+      />,
       { wrapper: WithProviders },
     );
     await act(async () => await server.connected);

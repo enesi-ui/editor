@@ -31,6 +31,9 @@ export class Ellipse implements CanvasShape {
   get name(): string | undefined {
     return "Ellipse";
   }
+  get canvasId(): string {
+    return "canvasId";
+  }
 
   constructor(
     origin: { x: number; y: number },

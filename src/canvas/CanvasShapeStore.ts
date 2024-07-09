@@ -3,7 +3,6 @@ import { CanvasShape, Shape } from "~/shape/CanvasShape.ts";
 import { selectionKeys, shapeKeys } from "~/api/key-factory.ts";
 import { QueryObserver } from "@tanstack/react-query";
 import queryClient from "~/api/query-client.ts";
-import { CANVASID } from "~/canvas/useSelection.ts";
 import { Selection } from "~/canvas/Selection.ts";
 
 export interface CanvasShapeStore {
@@ -29,9 +28,12 @@ const canvasShapeStore = createStore<CanvasShapeStore>((set, get) => ({
         store.find(shape.id)?.update(result.data);
       });
 
-      const selectionObserver = new QueryObserver<Selection | null>(queryClient, {
-        queryKey: selectionKeys.canvas(CANVASID),
-      });
+      const selectionObserver = new QueryObserver<Selection | null>(
+        queryClient,
+        {
+          queryKey: selectionKeys.canvas(shape.canvasId),
+        },
+      );
       selectionObserver.subscribe((result) => {
         if (!result || !result.data) return;
         if (result.data.shapeIds.includes(shape.id))

@@ -11,12 +11,15 @@ import { MousePosition } from "~/tool/Tools.ts";
 import { Layers } from "~/layers/Layers.tsx";
 import { useSelection } from "~/canvas/useSelection.ts";
 
-function Editor() {
+function Editor(props: { canvasId: string }) {
+  const { canvasId } = props;
+
   const app = usePixi();
   const pixiRef = useRef<HTMLDivElement>(null);
   const { width } = useWindowDimensions();
   const [canvasWidth, setCanvasWidth] = useState(width);
-  const { deselectAll } = useSelection();
+
+  const { deselectAll } = useSelection(canvasId);
 
   const { position } = useToolsContext();
 
@@ -32,17 +35,17 @@ function Editor() {
     });
   }, [app, pixiRef, width, deselectAll]);
 
-  useCanvasShapes();
+  useCanvasShapes(canvasId);
 
   return (
     <div data-testid="editor-canvas">
       <Toolbar>
-        <CreateShape />
+        <CreateShape canvasId={canvasId} />
       </Toolbar>
       <LayersPanel>
-        <Layers />
+        <Layers canvasId={canvasId} />
       </LayersPanel>
-      <PropertiesPanel />
+      <PropertiesPanel canvasId={canvasId} />
       <div
         onMouseEnter={() => (position.current = MousePosition.CANVAS)}
         onMouseLeave={() => (position.current = MousePosition.LEFT_PANEL)}

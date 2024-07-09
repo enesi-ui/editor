@@ -20,6 +20,7 @@ export class CanvasDataResource implements CanvasObject {
   private highlightColor = "#0f79fb";
   private highlightWidth = 2;
   public readonly id: string;
+  public readonly canvasId = "canvasId";
   private selected = false;
   private highlighted = false;
 

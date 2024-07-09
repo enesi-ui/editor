@@ -2,6 +2,7 @@ import { CanvasShape } from "~/shape/CanvasShape.ts";
 import { vi } from "vitest";
 
 export const canvasShapeMock: CanvasShape = {
+  canvasId: 'mockCanvasId',
   getSize: vi.fn(),
   update: vi.fn(),
   id: 'mockshapeId',

@@ -6,12 +6,12 @@ import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
 import { useSelection } from "~/canvas/useSelection.ts";
 import { canvasShapeStore } from "~/canvas/CanvasShapeStore.ts";
 
-export const useCanvasShapes = () => {
+export const useCanvasShapes = (canvasId: string) => {
   const store = canvasShapeStore();
   const { update } = useShapeUpdate();
-  const { shapes } = useShapes();
+  const { shapes } = useShapes(canvasId);
 
-  const { deselectAllSelect } = useSelection();
+  const { deselectAllSelect } = useSelection(canvasId);
 
   const app = usePixi();
 

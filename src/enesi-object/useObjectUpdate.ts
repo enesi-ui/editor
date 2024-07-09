@@ -38,6 +38,6 @@ export const useObjectUpdate = () => {
     isPending: mutationZIndex.isPending,
     updateZIndex: mutationZIndex.mutate,
     update: mutation.mutate,
-    variables: mutationZIndex.variables,
+    variables: mutation.variables,
   };
 };

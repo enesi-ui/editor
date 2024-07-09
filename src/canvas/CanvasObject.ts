@@ -7,6 +7,7 @@ export interface CanvasObject {
   getOrigin(): { x: number; y: number };
 
   get id(): string;
+  get canvasId(): string;
 
   clear(): void;
 

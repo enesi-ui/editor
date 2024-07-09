@@ -10,7 +10,7 @@ describe("useCanvasShapes", () => {
     store.current.clear();
   });
   it("constructs without crashing", async () => {
-    const { result, server } = setupHook(() => useCanvasShapes());
+    const { result, server } = setupHook(() => useCanvasShapes('canvasId'));
 
     expect(result).not.toBe(null);
 
@@ -18,7 +18,7 @@ describe("useCanvasShapes", () => {
   });
 
   it("initially returns no canvas shapes if no shapes are returned from endpoint", async () => {
-    const { server } = setupHook(() => useCanvasShapes());
+    const { server } = setupHook(() => useCanvasShapes('canvasId'));
     await act(async () => await server.connected);
 
     await waitFor(() => expect(store.current.data).toEqual([]));
@@ -28,7 +28,7 @@ describe("useCanvasShapes", () => {
 
   it("initially creates canvas shapes from the shapes returned from endpoint", async () => {
     expect.hasAssertions();
-    const { server } = setupHook(() => useCanvasShapes());
+    const { server } = setupHook(() => useCanvasShapes("canvasId"));
 
     await act(async () => await server.connected);
 
@@ -72,7 +72,7 @@ describe("useCanvasShapes", () => {
   it("sends initial shapes/get event to websocket", async () => {
     expect.assertions(1);
 
-    const { server } = setupHook(() => useCanvasShapes());
+    const { server } = setupHook(() => useCanvasShapes("canvasId"));
     await act(async () => await server.connected);
 
     const getAllMessage = JSON.stringify({ event: "shapes/get" });

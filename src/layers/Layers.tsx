@@ -3,8 +3,8 @@ import { Layer } from "~/layers/Layer.tsx";
 import { useObjects } from "~/enesi-object/useObjects.tsx";
 import { useObjectUpdate } from "~/enesi-object/useObjectUpdate.ts";
 
-export function Layers() {
-  const { objects } = useObjects();
+export function Layers({ canvasId }: { canvasId: string }) {
+  const { objects } = useObjects(canvasId);
   const { updateZIndex } = useObjectUpdate();
 
   const orderedLayers = objects?.sort((a, b) => a.zIndex - b.zIndex);
@@ -34,10 +34,11 @@ export function Layers() {
 
 
   return (
-    <ul className="menu rounded-lg w-full">
+    <ul className="menu rounded-lg w-full p-0">
       {orderedLayers?.map((object) => (
         <div key={object.id} data-id={object.id}>
           <Layer
+            canvasId={canvasId}
             objectId={object.id}
             onDragStart={() => handleDragStart(object.id)}
             onDragEnter={() => handleDragEnter(object.id)}

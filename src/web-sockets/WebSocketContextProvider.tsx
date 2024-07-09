@@ -45,9 +45,16 @@ export const WebSocketContextProvider = ({
 
       if (!data.data) return;
 
+      if (data.event.includes('error')) {
+        console.error(data.data);
+        return;
+      }
+
       const { keys } = extractQueryKeys(data);
 
       queryClient.setQueryData(keys, data.data);
+
+
     });
 
     webSocket.current = current;

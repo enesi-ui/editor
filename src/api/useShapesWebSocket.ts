@@ -23,9 +23,10 @@ export const useShapesWebSocket = () => {
       return client.getQueryData<Shape>(shapeKeys.detail(id)) ?? null;
     },
 
-    getAll: (): Shape[] => {
+    getAll: (canvasId: string): Shape[] => {
       webSocket.send({
         event: "shapes/get",
+        data: canvasId,
       });
       return client.getQueryData<Shape[]>(shapeKeys.all) ?? [];
     },

@@ -67,7 +67,6 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
     <div className="grid grid-cols-2 px-0 gap-x-2 gap-y-1 mx-2">
       <Property
         key={`x-${x}`}
-        topBorder
         label="X"
         value={x}
         id="x"
@@ -76,7 +75,6 @@ export const ShapeProperties = (props: ShapePropertiesProps) => {
       />
       <Property
         key={`y-${y}`}
-        topBorder
         label="Y"
         value={y}
         id="y"

@@ -18,3 +18,7 @@ export const componentKeys = {
   detail: (id: string) => [...componentKeys.all, id] as const,
 };
 
+export const canvasKeys = {
+  all: ["canvases"] as const,
+  detail: (id: string) => [...canvasKeys.all, id] as const,
+};

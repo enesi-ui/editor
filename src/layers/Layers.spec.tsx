@@ -15,12 +15,12 @@ describe("Layers", () => {
     });
   });
   it("renders with out crashing", () => {
-    setup(<Layers />, { wrapper: WithProviders });
+    setup(<Layers canvasId={"canvasId"} />, { wrapper: WithProviders });
   });
 
   it("renders a list of shapes", async () => {
     expect.hasAssertions();
-    setup(<Layers />, { wrapper: WithProviders });
+    setup(<Layers canvasId={"canvasId"} />, { wrapper: WithProviders });
     await act(async () => await server.connected);
 
     const data = [
@@ -71,7 +71,7 @@ describe("Layers", () => {
 
   it("renders a list of layer with a selected shape", async () => {
     expect.hasAssertions();
-    setup(<Layers />, { wrapper: WithProviders });
+    setup(<Layers canvasId={"canvasId"} />, { wrapper: WithProviders });
     await act(async () => await server.connected);
 
     const data = [
@@ -148,7 +148,7 @@ describe("Layers", () => {
   it("renders the selected layer after clicking on it", async () => {
     expect.hasAssertions();
 
-    setup(<Layers />, { wrapper: WithProviders });
+    setup(<Layers canvasId={"canvasId"} />, { wrapper: WithProviders });
     await act(async () => await server.connected);
 
     const data = [
@@ -230,7 +230,9 @@ describe("Layers", () => {
   it("double clicking on the layer name changes the name to an input", async () => {
     expect.hasAssertions();
 
-    const { user } = setup(<Layers />, { wrapper: WithProviders });
+    const { user } = setup(<Layers canvasId={"canvasId"} />, {
+      wrapper: WithProviders,
+    });
     await act(async () => await server.connected);
 
     const data = [
@@ -283,7 +285,9 @@ describe("Layers", () => {
   it("double clicking on the layer name focuses the input", async () => {
     expect.hasAssertions();
 
-    const { user } = setup(<Layers />, { wrapper: WithProviders });
+    const { user } = setup(<Layers canvasId={"canvasId"} />, {
+      wrapper: WithProviders,
+    });
     await act(async () => await server.connected);
 
     const data = [
@@ -337,7 +341,7 @@ describe("Layers", () => {
   it("renders layer in order of z-index", async () => {
     expect.hasAssertions();
 
-    setup(<Layers />, { wrapper: WithProviders });
+    setup(<Layers canvasId={"canvasId"} />, { wrapper: WithProviders });
     await act(async () => await server.connected);
 
     const data = [

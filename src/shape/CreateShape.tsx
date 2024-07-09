@@ -25,15 +25,15 @@ const factories: Factory[] = [
   },
 ];
 
-export const CreateShape = () => {
+export const CreateShape = ({ canvasId }: { canvasId: string }) => {
   const { tool, setTool } = useToolsContext();
 
   const { hide, open, toggle, triggerElement } = useContextMenu();
 
-  const { subscribe } = useRectangleFactory();
+  const { subscribe } = useRectangleFactory(canvasId);
 
   const handleClick = (factory: Factory) => {
-    console.log("CreateShape handleClick", factory)
+    console.log("CreateShape handleClick", factory);
     setTool(Tools.CREATE_SHAPE);
     subscribe();
   };

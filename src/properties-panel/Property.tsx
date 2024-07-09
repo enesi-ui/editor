@@ -8,17 +8,12 @@ interface PropertyProps {
   type?: "text" | "number";
   fullWidth?: boolean;
   step?: number;
-  topBorder?: boolean;
+  hideLabel?: boolean;
+  showBorders?: boolean;
 }
 export const Property = (props: PropertyProps) => {
-  const {
-    value,
-    id,
-    label,
-    type,
-    step,
-    onChange,
-  } = props;
+  const { value, id, label, type, step, onChange, showBorders, hideLabel } =
+    props;
   const [internalValue, setInternalValue] = useState(value);
 
   const handleChange = (value: string) => {
@@ -28,9 +23,12 @@ export const Property = (props: PropertyProps) => {
   return (
     <label
       htmlFor={id}
-      className={`input input-ghost input-sm flex items-center gap-2`}
+      className={`input input-sm flex items-center gap-2 ${
+        showBorders ? "input-bordered" : "input-ghost"
+      }`}
+      aria-label={label}
     >
-      {label}
+      {!hideLabel && label}
       <input
         id={id}
         // note: number type breaks on all browsers with proper localisation

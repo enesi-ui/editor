@@ -1,24 +1,26 @@
-import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
 import { useSelection } from "~/canvas/useSelection.ts";
 import { RectangleIcon } from "~/icon/RectangleIcon.tsx";
 import { SelectableListItemInput } from "~/input/SelectableListItemInput.tsx";
 import { DragEvent, useRef, useState } from "react";
 import { useObject } from "~/enesi-object/useObject.ts";
+import { useObjectUpdate } from "~/enesi-object/useObjectUpdate.ts";
 
 export function Layer({
+  canvasId,
   objectId,
   onDragStart,
   onDragEnter,
   onDragEnd,
 }: {
+  canvasId: string;
   objectId: string;
   onDragStart?: () => void;
   onDragEnter?: () => void;
   onDragEnd?: () => void;
 }) {
   const { object } = useObject(objectId);
-  const { update, isPending, variables } = useShapeUpdate();
-  const { deselectAllSelect, selectedShapes } = useSelection();
+  const { update, isPending, variables } = useObjectUpdate();
+  const { deselectAllSelect, selectedShapes } = useSelection(canvasId);
   const dragEffectRef = useRef<HTMLImageElement>(null);
 
   const [cursorEffect, setCursorEffect] = useState<
