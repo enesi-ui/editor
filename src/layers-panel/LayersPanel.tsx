@@ -9,7 +9,7 @@ export const LayersPanel = ({ children }: LayerPanelProps) => {
       role="region"
       aria-label="Layer Panel"
       tabIndex={0}
-      className="absolute border-panel top-[var(--toolbar-height)] m-2 left-0 bg-base-100 py-2 z-10 min-w-[240px] max-w-[300px] collapse collapse-arrow collapse-open"
+      className='absolute cursor-pointer border-panel top-[var(--toolbar-height)] m-2 left-0 bg-base-100 py-2 z-10 min-w-[240px] max-w-[300px] collapse collapse-arrow'
     >
       <input type="checkbox" />
       <div className="collapse-title text-l">Layers Panel</div>

@@ -46,19 +46,19 @@ describe("Layers", () => {
 
     server.send(
       JSON.stringify({
-        event: "shapes/get",
+        event: "objects/get",
         data: data,
       }),
     );
     server.send(
       JSON.stringify({
-        event: "shapes/:id/get",
+        event: "objects/:id/get",
         data: data[0],
       }),
     );
     server.send(
       JSON.stringify({
-        event: "shapes/:id/get",
+        event: "objects/:id/get",
         data: data[1],
       }),
     );
@@ -370,19 +370,19 @@ describe("Layers", () => {
     act(() => {
       server.send(
         JSON.stringify({
-          event: "shapes/get",
+          event: "objects/get",
           data: data,
         }),
       );
       server.send(
         JSON.stringify({
-          event: "shapes/:id/get",
+          event: "objects/:id/get",
           data: data[0],
         }),
       );
       server.send(
         JSON.stringify({
-          event: "shapes/:id/get",
+          event: "objects/:id/get",
           data: data[1],
         }),
       );
@@ -396,7 +396,7 @@ describe("Layers", () => {
     const list = screen.getByRole("list");
     const items = list.querySelectorAll("li");
 
-    expect(items[0]).toHaveTextContent("Some Other Shape");
-    expect(items[1]).toHaveTextContent("Some Shape");
+    expect(items[0]).toHaveTextContent("Some Shape");
+    expect(items[1]).toHaveTextContent("Some Other Shape");
   });
 });

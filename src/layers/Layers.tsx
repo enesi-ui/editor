@@ -7,7 +7,7 @@ export function Layers({ canvasId }: { canvasId: string }) {
   const { objects } = useObjects(canvasId);
   const { updateZIndex } = useObjectUpdate();
 
-  const orderedLayers = objects?.sort((a, b) => a.zIndex - b.zIndex);
+  const orderedLayers = objects?.sort((a, b) => b.zIndex - a.zIndex);
 
   const [dragging, setDragging] = useState<string | null>(null);
   const [drop, setDrop] = useState<string | null>(null);
@@ -22,11 +22,11 @@ export function Layers({ canvasId }: { canvasId: string }) {
 
   const handleDragEnd = async () => {
     if (!dragging || !drop || !orderedLayers) return;
-    const aboveObject = orderedLayers.find((object) => object.id === drop);
-    if (!aboveObject) return;
+    const belowObject = orderedLayers.find((object) => object.id === drop);
+    if (!belowObject) return;
     updateZIndex({
       id: dragging,
-      aboveObjectId: aboveObject.id,
+      belowObject: belowObject.id,
     });
     setDragging(null);
     setDrop(null);

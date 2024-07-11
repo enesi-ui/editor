@@ -34,7 +34,7 @@ export class Rectangle implements CanvasShape {
   }
 
   get canvasId() {
-    return this.data.canvasId;
+    return this.data.canvas;
   }
 
   constructor(
@@ -312,7 +312,7 @@ export class Rectangle implements CanvasShape {
       radius: this.data.radius,
       zIndex: this.data.zIndex,
       name: this.data.name,
-      canvasId: this.data.canvasId,
+      canvas: this.data.canvas,
     };
   }
 

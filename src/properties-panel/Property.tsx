@@ -26,7 +26,7 @@ export const Property = (props: PropertyProps) => {
       className={`input input-sm flex items-center gap-2 ${
         showBorders ? "input-bordered" : "input-ghost"
       }`}
-      aria-label={label}
+      aria-label={hideLabel ? label : ''}
     >
       {!hideLabel && label}
       <input

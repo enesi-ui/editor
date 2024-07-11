@@ -25,7 +25,7 @@ describe("Layer", () => {
     act(() => {
       server.send(
         JSON.stringify({
-          event: "shapes/:id/get",
+          event: "objects/:id/get",
           data: {
             name: "Some Shape",
             id: "1",
@@ -58,7 +58,7 @@ describe("Layer", () => {
     act(() => {
       server.send(
         JSON.stringify({
-          event: "shapes/:id/get",
+          event: "objects/:id/get",
           data: {
             name: "Some Shape",
             id: "1",

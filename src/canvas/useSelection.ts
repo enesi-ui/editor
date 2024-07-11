@@ -14,23 +14,21 @@ export const useSelection = (canvasId: string) => {
     mutationFn: api.put,
   });
 
-  const deselectAll = async () => {
+  const deselectAll = async () =>
     await mutation.mutateAsync({
       canvasId,
       selectShapes: [],
       deselectShapes: [],
       deselectAll: true,
     });
-  };
 
-  const deselectAllSelect = (shapeId: string) => {
+  const deselectAllSelect = (shapeId: string) =>
     mutation.mutate({
       canvasId,
       selectShapes: [shapeId],
       deselectShapes: [],
       deselectAll: true,
     });
-  };
 
   return {
     selectedShapes: data?.shapeIds.length ? data.shapeIds : undefined,

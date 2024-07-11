@@ -22,7 +22,7 @@ export interface Shape {
   };
   zIndex: number;
   radius: number;
-  canvasId: string;
+  canvas: string;
 }
 
 export interface CanvasShape extends CanvasObject {

@@ -25,8 +25,10 @@ export const useObjectsWebsocket = () => {
 
     patchZIndex: (body: {
       id: string;
-      aboveObjectId: string;
-      belowObjectId?: string;
+      belowObject?: string;
+      onTop?: boolean;
+      onBottom?: boolean;
+      canvasId?: string;
     }): Promise<EnesiObject> => {
       return new Promise((resolve) => {
         webSocket.listenOnce((data: { data: EnesiObject }) => {

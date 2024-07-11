@@ -18,7 +18,7 @@ const data: Shape = {
   radius: 0,
   name: "New Rectangle",
   zIndex: 0,
-  canvasId: "canvasId",
+  canvas: "123",
 };
 
 describe("Rectangle", () => {
@@ -44,7 +44,7 @@ describe("Rectangle", () => {
       radius: 0,
       name: "New Rectangle",
       zIndex: 0,
-      canvasId: "canvasId",
+      canvas: "123",
     });
   });
 
@@ -71,13 +71,16 @@ describe("Rectangle", () => {
       radius: 0,
       name: "New Rectangle",
       zIndex: 0,
-      canvasId: "canvasId",
+      canvas: "123",
     });
   });
 
   it("sets stroke", () => {
     const rectangle = new Rectangle({ x: 0, y: 0 }, new Application(), data);
-    rectangle.update({...data, strokes: [{ color: "#d12020", alpha: 1, width: 1 }]});
+    rectangle.update({
+      ...data,
+      strokes: [{ color: "#d12020", alpha: 1, width: 1 }],
+    });
     expect(rectangle.serialize()).toEqual({
       id: "12",
       type: "RECTANGLE",
@@ -93,7 +96,7 @@ describe("Rectangle", () => {
       radius: 0,
       name: "New Rectangle",
       zIndex: 0,
-      canvasId: "canvasId",
+      canvas: "123",
     });
   });
 
@@ -113,7 +116,7 @@ describe("Rectangle", () => {
       radius: 0,
       name: "Some Shape",
       zIndex: 0,
-      canvasId: "123",
+      canvas: "123",
     });
     expect(rectangle.serialize()).toEqual({
       id: "12",
@@ -130,7 +133,7 @@ describe("Rectangle", () => {
       radius: 0,
       name: "Some Shape",
       zIndex: 0,
-      canvasId: "canvasId",
+      canvas: "123",
     });
   });
 });
