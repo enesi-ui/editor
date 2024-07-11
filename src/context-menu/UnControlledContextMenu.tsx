@@ -22,7 +22,7 @@ export const UnControlledContextMenu = ({ children, triggerElement }: PropsWithC
     return () => {
       triggerElement.removeEventListener("pointerdown", handlePointerDown)
     }
-  }, []);
+  }, [set, triggerElement]);
 
   return (
     <ContextMenu
