@@ -5,7 +5,7 @@ import { Application } from "pixi.js";
 import { Shape } from "~/shape/CanvasShape.ts";
 
 const data: Shape = {
-  canvasId: "",
+  canvas: "id",
   container: { height: 0, width: 0, x: 0, y: 0 },
   fills: [],
   graphics: { height: 0, width: 0, x: 0, y: 0 },

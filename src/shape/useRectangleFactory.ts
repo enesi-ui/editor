@@ -154,7 +154,7 @@ export const useRectangleFactory = (canvasId: string) => {
             alpha: initFillAlpha,
           },
         ],
-        canvasId,
+        canvas: canvasId,
         zIndex: container.zIndex,
         radius: 0,
         name: "New Rectangle",
