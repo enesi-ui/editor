@@ -327,6 +327,7 @@ export class Rectangle implements CanvasShape {
     this.data.container = data.container;
     this.data.graphics = data.graphics;
 
+    this.container.zIndex = data.zIndex;
     this.setSizeOrigin(
       data.container.x,
       data.container.y,

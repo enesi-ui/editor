@@ -23,7 +23,12 @@ export function Layers({ canvasId }: { canvasId: string }) {
   const handleDragEnd = async () => {
     if (!dragging || !drop || !orderedLayers) return;
     const belowObject = orderedLayers.find((object) => object.id === drop);
-    if (!belowObject) return;
+    if (!belowObject) {
+      setDragging(null);
+      setDrop(null);
+      console.error("belowObject not found");
+      return;
+    }
     updateZIndex({
       id: dragging,
       belowObject: belowObject.id,
@@ -31,7 +36,6 @@ export function Layers({ canvasId }: { canvasId: string }) {
     setDragging(null);
     setDrop(null);
   };
-
 
   return (
     <ul className="menu rounded-lg w-full p-0">
