@@ -11,12 +11,14 @@ export const useObjectUpdate = () => {
     mutationFn: api.patchZIndex,
     onSettled: async (data) => {
       if (!data) return;
-      const { id: objectId } = data;
-      const key = getCacheKey(data);
-      queryClient.setQueryData(key.detail, data);
-      queryClient.setQueryData(key.all, (objects: EnesiObject[]) =>
-        objects.map((object) => (object.id === objectId ? data : object)),
-      );
+
+      data.forEach((object) => {
+        const key = getCacheKey(object);
+        queryClient.setQueryData(key.detail, object);
+        queryClient.setQueryData(key.all, (objects: EnesiObject[]) =>
+          objects.map((o) => (o.id === object.id ? object : o)),
+        );
+      });
     },
   });
 

@@ -46,7 +46,9 @@ export class Rectangle implements CanvasShape {
       onUpdate?: (shape: Shape) => unknown;
     },
   ) {
+    console.log("Rectangle", data);
     this.container = app.stage.addChild(new Container());
+    this.container.zIndex = data.zIndex;
     this.container.eventMode = "static";
     this.container.sortableChildren = true;
     this.container.x = origin.x;
@@ -242,7 +244,7 @@ export class Rectangle implements CanvasShape {
           this.data.radius,
         )
         .endFill();
-      stroke.zIndex = 2;
+      stroke.zIndex = 3;
       this.currentStrokes.push(this.container.addChild(stroke));
     });
   }

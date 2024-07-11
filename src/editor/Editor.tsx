@@ -28,6 +28,7 @@ function Editor(props: { canvasId: string }) {
     pixiRef.current.appendChild(app.view);
     app.stage.eventMode = "static";
     app.stage.hitArea = app.screen;
+    app.stage.sortableChildren = true;
     setCanvasWidth(width);
     app.resizeTo = pixiRef.current;
     app.stage.on("pointerdown", async () => {

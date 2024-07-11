@@ -29,9 +29,9 @@ export const useObjectsWebsocket = () => {
       onTop?: boolean;
       onBottom?: boolean;
       canvasId?: string;
-    }): Promise<EnesiObject> => {
+    }): Promise<EnesiObject[]> => {
       return new Promise((resolve) => {
-        webSocket.listenOnce((data: { data: EnesiObject }) => {
+        webSocket.listenOnce((data: { data: EnesiObject[] }) => {
           resolve(data.data);
         });
         webSocket.send({
