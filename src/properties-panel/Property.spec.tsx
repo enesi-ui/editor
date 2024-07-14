@@ -22,4 +22,18 @@ describe("Property", () => {
 
     expect(handleChange).toHaveBeenCalledWith("new Value");
   });
+
+  describe("number", () => {
+    test("cleans text input to number", async () => {
+      const handleChange = vi.fn();
+      const { user } = setup(
+        <Property label="Label" id="id" onChange={handleChange} value={1} type="number"/>,
+      );
+
+      await user.clear(screen.getByLabelText("Label"));
+      await user.type(screen.getByLabelText("Label"), "some-text[enter]");
+
+      expect(handleChange).toHaveBeenCalledWith("1");
+    });
+  });
 });

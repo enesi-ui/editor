@@ -20,6 +20,17 @@ export const Property = (props: PropertyProps) => {
     setInternalValue(value);
   };
 
+  const cleanValue = (input: string) => {
+    if (type === "number") {
+      const number = parseFloat(input);
+      if (isNaN(number)) {
+        return value;
+      }
+      return number;
+    }
+    return input;
+  }
+
   return (
     <label
       htmlFor={id}
@@ -43,12 +54,18 @@ export const Property = (props: PropertyProps) => {
         }}
         onBlur={(e) => {
           e.preventDefault();
-          return onChange?.(internalValue.toString());
+          const cleanedValue = cleanValue(internalValue.toString());
+          setInternalValue(cleanedValue.toString());
+          return onChange?.(cleanedValue.toString());
         }}
         onKeyDown={(e) => {
           e.stopPropagation();
           if (e.key === "Enter") {
-            return onChange?.(internalValue.toString());
+            const cleanedValue = cleanValue(internalValue.toString());
+            console.log(cleanedValue);
+            setInternalValue(cleanedValue.toString());
+            e.currentTarget.blur();
+            return onChange?.(cleanedValue.toString());
           }
         }}
         className={"w-full"}

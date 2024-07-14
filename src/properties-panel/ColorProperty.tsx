@@ -39,6 +39,14 @@ export const ColorProperty = (props: ColorPropertyProps) => {
   const initialValue = useRef(addAlpha(value, alpha ?? 1));
   const hasAlpha = useRef(alpha !== undefined);
 
+  const [internalAlphaValue, setInternalAlphaValue] = useState(
+    alpha?.toString(),
+  );
+
+  const handleChange = (value: string) => {
+    setInternalAlphaValue(value);
+  };
+
   const ref = useCallback((colorPickerRef: HTMLElement | null) => {
     if (!colorPickerRef) return;
     const layout: {
@@ -92,6 +100,14 @@ export const ColorProperty = (props: ColorPropertyProps) => {
     };
   }, [colorPicker, onChange, onChangeAlpha]);
 
+  const cleanAlpha = (value?: string) => {
+    const floatValue = parseFloat(value ?? "");
+
+    return isNaN(floatValue) || floatValue < 0 || floatValue > 1
+      ? alpha ?? 1
+      : floatValue;
+  };
+
   return (
     <div className={`flex items-center justify-between w-full ${className}`}>
       <ContextMenu
@@ -144,11 +160,27 @@ export const ColorProperty = (props: ColorPropertyProps) => {
           <input
             step={0.01}
             id={`${id}-alpha`}
-            type="number"
-            value={alpha}
+            type="text"
+            value={internalAlphaValue}
+            min={0}
             onChange={(e) => {
               e.preventDefault();
-              return onChangeAlpha?.(parseFloat(e.target.value));
+              return handleChange(e.target.value);
+            }}
+            onBlur={(e) => {
+              e.preventDefault();
+              const cleanValue = cleanAlpha(internalAlphaValue);
+              setInternalAlphaValue(cleanValue.toString());
+              return onChangeAlpha?.(cleanValue);
+            }}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+              if (e.key === "Enter") {
+                const cleanValue = cleanAlpha(internalAlphaValue);
+                setInternalAlphaValue(cleanValue.toString());
+                e.currentTarget.blur();
+                return onChangeAlpha?.(cleanValue);
+              }
             }}
             className={
               "pl-1 border-transparent border-l group-hover:border-base-content/20 min-w-0 w-full"

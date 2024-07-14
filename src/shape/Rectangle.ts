@@ -8,7 +8,6 @@ import { CanvasShape, Shape } from "~/shape/CanvasShape.ts";
 import { StrokePropertyData } from "~/properties-panel/StrokePropertyData.ts";
 import { roundNumber } from "~/utility/round.ts";
 import { CanvasObjectSelectMove } from "~/shape/CanvasObjectSelectMove.ts";
-import { FillPropertyData } from "~/properties-panel/FillPropertyData.ts";
 import { isValidHexCode } from "~/utility/hex.ts";
 import { ResizeHandles } from "~/shape/ResizeHandles.ts";
 
@@ -46,7 +45,6 @@ export class Rectangle implements CanvasShape {
       onUpdate?: (shape: Shape) => unknown;
     },
   ) {
-    console.log("Rectangle", data);
     this.container = app.stage.addChild(new Container());
     this.container.zIndex = data.zIndex;
     this.container.eventMode = "static";
@@ -81,7 +79,7 @@ export class Rectangle implements CanvasShape {
     this.container.addChild(this.selectGraphics);
 
     this.resizeHandles = new ResizeHandles(app, this, (x, y, width, height) => {
-      this.setSizeOrigin(x, y, width, height, true);
+      this.setSizeOrigin(roundNumber(x), roundNumber(y), roundNumber(width), roundNumber(height));
       if (this.id) this.options?.onUpdate?.(this.serialize());
     });
     this.resizeHandles.attach(this.container);
@@ -89,11 +87,7 @@ export class Rectangle implements CanvasShape {
     this.radiusHandle = new Graphics();
     this.createRadiusHandles();
 
-    this.setGraphics(
-      this.data.fills,
-      this.data.graphics.width,
-      this.data.graphics.height,
-    );
+    this.setGraphics(this.data.graphics.width, this.data.graphics.height);
     this.setStrokes(this.data.strokes);
     this.updateGuides();
 
@@ -195,24 +189,27 @@ export class Rectangle implements CanvasShape {
     y: number,
     width: number,
     height: number,
-    round?: boolean,
   ) {
-    this.container.x = round ? roundNumber(x) : x;
-    this.container.y = round ? roundNumber(y) : y;
-    const roundedWidth = round ? roundNumber(width) : width;
-    const roundedHeight = round ? roundNumber(height) : height;
-    this.setGraphics(this.data.fills, roundedWidth, roundedHeight);
+    this.container.x = x;
+    this.container.y = y;
+    this.setGraphics(width, height);
     this.setStrokes(this.data.strokes);
     this.updateGuides();
   }
 
   private setGraphics(
-    fills: FillPropertyData[],
     width: number,
     height: number,
   ) {
     this.graphics.clear();
-    fills.forEach((fillProperty) => {
+    if (this.data.fills.length === 0) {
+      this.graphics
+        .beginFill('#ffffff', 0.000000001)
+        .drawRoundedRect(0, 0, width, height, this.data.radius)
+        .endFill();
+      return;
+    }
+    this.data.fills.forEach((fillProperty) => {
       const { color, alpha } = fillProperty;
       const validColor = isValidHexCode(color) ? color : this.initFill;
       this.graphics
