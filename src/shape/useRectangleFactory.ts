@@ -8,6 +8,7 @@ import { useShapesPost } from "~/shape/useShapesPost.ts";
 import { useShapeUpdate } from "~/shape/useShapeUpdate.ts";
 import { canvasShapeStore } from "~/canvas/CanvasShapeStore.ts";
 import { ResizeHandles } from "~/shape/ResizeHandles.ts";
+import { roundNumber } from "~/utility/round.ts";
 
 const createGuides = (container: Container) => {
   const highlightColor = "#c792e9";
@@ -91,6 +92,7 @@ export const useRectangleFactory = (canvasId: string) => {
     container.sortableChildren = true;
     container.x = origin.x;
     container.y = origin.y;
+    const { x, y } = container;
 
     const graphics = container.addChild(
       new Graphics()
@@ -108,14 +110,18 @@ export const useRectangleFactory = (canvasId: string) => {
 
     const move = (event: FederatedPointerEvent) => {
       const pointer = event.global;
-      const { x, y } = container;
-      const isInvertedX = pointer.x < x;
-      const isInvertedY = pointer.y < y;
+      const pointerX = pointer.x;
+      const pointerY = pointer.y;
 
-      container.x = isInvertedX ? pointer.x : x;
-      container.y = isInvertedY ? pointer.y : y;
-      const roundedWidth = Math.abs(pointer.x - x);
-      const roundedHeight = Math.abs(pointer.y - y);
+      const isInvertedX = pointerX < x;
+      const isInvertedY = pointerY < y;
+
+      container.x = isInvertedX ? pointerX : x;
+      container.y = isInvertedY ? pointerY : y;
+
+      const roundedWidth = roundNumber(Math.abs(pointerX - x));
+      const roundedHeight = roundNumber(Math.abs(pointerY - y));
+
       graphics.clear();
       const validColor = isValidHexCode(initFill) ? initFill : initFill;
       graphics
@@ -136,8 +142,8 @@ export const useRectangleFactory = (canvasId: string) => {
       await handleFinished({
         type: "RECTANGLE",
         container: {
-          x: container.x,
-          y: container.y,
+          x: roundNumber(container.x),
+          y: roundNumber(container.y),
           width: container.width,
           height: container.height,
         },
@@ -168,7 +174,7 @@ export const useRectangleFactory = (canvasId: string) => {
   return {
     subscribe: () => {
       const handlePointerDown = (event: FederatedPointerEvent) => {
-        create(event);
+        create(event.global);
       };
 
       app.stage.removeAllListeners("pointerdown");
