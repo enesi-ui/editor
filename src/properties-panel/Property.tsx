@@ -62,7 +62,6 @@ export const Property = (props: PropertyProps) => {
           e.stopPropagation();
           if (e.key === "Enter") {
             const cleanedValue = cleanValue(internalValue.toString());
-            console.log(cleanedValue);
             setInternalValue(cleanedValue.toString());
             e.currentTarget.blur();
             return onChange?.(cleanedValue.toString());
